@@ -1,0 +1,38 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+test-results/
+playwright-report/
+artifacts/
+*.tsbuildinfo
+next-env.d.ts
+
+# Keep credentials private; publish only the configuration template.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Local database files and customer-uploaded photographs.
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+/public/uploads/
+/generated/prisma/
+
+# Machine-specific tooling and caches.
+.agents/
+.claude/
+.windsurf/
+.codex/
+.npm-cache/
+*.log
+.DS_Store
+Thumbs.db
