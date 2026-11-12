@@ -1,32 +1,51 @@
 import { Header, Footer, SectionLabel } from "@/components/site-chrome";
-import { SellMultiStepForm } from "@/components/sell-multi-step-form";
-import { BRAND } from "@/config/brand";
-
-export const metadata = {
-  title: "Sell Your Watch — Private Consignment & Valuation",
-  description: "Submit your luxury wristwatch for professional valuation and consignment review by Atelier Timepieces in Windhoek, Namibia. No public account required.",
-};
-
-export default function SellPage() {
+import { SellForm } from "@/components/sell-form";
+import { demoEnabled } from "@/lib/catalogue";
+import { LockKeyhole, Clock3 } from "lucide-react";
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Sell Your Watch" };
+export default function Sell() {
   return (
     <>
       <Header />
-      <main className="bg-[#08090B] pt-32 pb-36 min-h-screen">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          {/* Editorial Header */}
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <SectionLabel>PRIVATE HOROLOGICAL ADVISORY</SectionLabel>
-            <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl text-white font-normal uppercase tracking-tight mt-3 mb-4">
-              YOUR WATCH. OUR SHOWCASE.
-            </h1>
-            <p className="text-base sm:text-lg text-[#A8A59E] leading-relaxed font-sans-ui">
-              Entrust your luxury timepiece to our discreet consignment service. Complete our secure 4-step submission to receive a prompt appraisal from our Windhoek curation board.
-            </p>
+      <main className="page-main section-wrap sell-page">
+        <div className="sell-introduction">
+          <SectionLabel>A NEW CHAPTER</SectionLabel>
+          <h1>
+            Your watch.
+            <br />
+            <em>Our showcase.</em>
+          </h1>
+          <p>
+            Every timepiece has a story. Tell us yours, and let’s explore what
+            comes next.
+          </p>
+          <div className="sell-promise">
+            <LockKeyhole size={19} />
+            <div>
+              <strong>Private from the start.</strong>
+              <p>
+                Your details and photographs are only visible to our review
+                team.
+              </p>
+            </div>
           </div>
-
-          {/* Multi-Step Submission Form */}
-          <SellMultiStepForm />
+          <div className="sell-promise">
+            <Clock3 size={19} />
+            <div>
+              <strong>A personal consideration.</strong>
+              <p>
+                No automated listings. Every submission is reviewed before
+                publication.
+              </p>
+            </div>
+          </div>
+          <p className="field-note">
+            Submitting your watch does not constitute authentication, valuation
+            or an offer to purchase.
+          </p>
         </div>
+        <SellForm demo={demoEnabled()} />
       </main>
       <Footer />
     </>

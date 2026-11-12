@@ -1,159 +1,112 @@
-import { db } from "@/lib/db";
-import { apiError, checkOrigin, HttpError } from "@/lib/auth";
+import { after } from "next/server";
+import { db, backendConfigured } from "@/lib/db";
+import { checkOrigin, apiError, HttpError } from "@/lib/auth";
 import { submissionSchema } from "@/lib/validation";
-import { rateLimit, saveUploadedFile, sendEmailNotification } from "@/lib/services";
-import { BRAND, formatNAD } from "@/config/brand";
-
+import { rateLimit, verifyBot } from "@/lib/services";
+import { limitedForm } from "@/lib/http";
+import { uploadFiles, privateBucket, removeObjects } from "@/lib/storage";
+import { adminRecipients, tryFlushEmail } from "@/lib/email";
+import { brand } from "@/config/brand";
 export const runtime = "nodejs";
-
 export async function POST(req: Request) {
-  const savedFilePaths: string[] = [];
-
+  let keys: string[] = [];
+  let saved = false;
   try {
     checkOrigin(req);
-    await rateLimit(req, "watch_submission", 8);
-
-    const formData = await req.formData();
-    const rawData = Object.fromEntries(formData);
-
+    if (!backendConfigured)
+      throw new HttpError(
+        503,
+        "Submissions are not connected in this design preview. No personal details or photos have been saved.",
+      );
+    await rateLimit(req, "submission");
+    const form = await limitedForm(req);
     const parsed = submissionSchema.safeParse({
-      ...rawData,
-      box: formData.get("box") === "true",
-      papers: formData.get("papers") === "true",
-      proof: formData.get("proof") === "true",
-      consent: formData.get("consent") === "true",
+      ...Object.fromEntries(form),
+      box: form.get("box") === "true",
+      papers: form.get("papers") === "true",
+      consent: form.get("consent") === "true",
     });
-
-    if (!parsed.success) {
+    if (!parsed.success)
       throw new HttpError(400, parsed.error.issues[0].message);
-    }
-
+    await verifyBot(parsed.data.botToken, "submission");
+    const photos = form
+      .getAll("photos")
+      .filter((f): f is File => f instanceof File);
+    if (photos.length < 3 || photos.length > 6)
+      throw new HttpError(400, "Please supply 3?6 photographs.");
+    keys = await uploadFiles(photos, privateBucket(), "submissions");
     const {
-      fullName,
+      name,
       email,
       phone,
       preferredContactMethod,
-      brand,
-      model,
-      referenceNumber,
-      year,
-      condition,
-      requestedPrice,
-      currency,
-      description,
-      defects,
-      box,
-      papers,
-      proof,
+      price,
+      consent,
+      website,
+      botToken,
+      ...watch
     } = parsed.data;
-
-    // Extract photo files
-    const photoFiles = formData
-      .getAll("photos")
-      .filter((item): item is File => item instanceof File && item.size > 0);
-
-    if (photoFiles.length === 0) {
-      throw new HttpError(400, "Please upload at least one photograph of your watch.");
-    }
-    if (photoFiles.length > 8) {
-      throw new HttpError(400, "Maximum of 8 photographs allowed per submission.");
-    }
-
-    // Save uploaded photos
-    for (const file of photoFiles) {
-      const storedPath = await saveUploadedFile(file, "submissions");
-      savedFilePaths.push(storedPath);
-    }
-
-    // 1. Find or create Seller
-    let seller = await db.seller.findFirst({
-      where: { email: email.toLowerCase() },
-    });
-
-    if (!seller) {
-      seller = await db.seller.create({
+    const record = await db.$transaction(async (tx) => {
+      const seller = await tx.seller.create({
+        data: { fullName: name, email, phone, preferredContactMethod },
+      });
+      const submission = await tx.watchSubmission.create({
         data: {
-          fullName,
-          email: email.toLowerCase(),
-          phone,
-          preferredContactMethod,
+          ...watch,
+          requestedPrice: price,
+          sellerId: seller.id,
+          images: {
+            create: keys.map((storageKey, sortOrder) => ({
+              storageKey,
+              sortOrder,
+            })),
+          },
         },
       });
-    } else {
-      seller = await db.seller.update({
-        where: { id: seller.id },
-        data: { fullName, phone, preferredContactMethod },
-      });
-    }
-
-    // 2. Convert requestedPrice to integer minor units (cents)
-    const priceInCents = Math.round(requestedPrice * BRAND.minorUnitFactor);
-
-    // 3. Create WatchSubmission in PENDING_REVIEW state (NEVER auto-published)
-    const submission = await db.watchSubmission.create({
-      data: {
-        sellerId: seller.id,
-        brand,
-        model,
-        referenceNumber: referenceNumber || null,
-        year: year || null,
-        condition,
-        requestedPrice: priceInCents,
-        currency,
-        description,
-        defects: defects || null,
-        box,
-        papers,
-        proof,
-        status: "PENDING_REVIEW",
-        images: {
-          create: savedFilePaths.map((filePath, index) => ({
-            storageKey: filePath,
-            sortOrder: index,
+      await tx.emailOutbox.createMany({
+        data: [
+          {
+            submissionId: submission.id,
+            to: email,
+            subject: brand.name + " ? submission received",
+            text:
+              "Thank you for submitting your " +
+              watch.brand +
+              " " +
+              watch.model +
+              ". Your reference is " +
+              submission.id +
+              ". It is private and pending review. Submission is not authentication, valuation or an offer to buy.",
+          },
+          ...adminRecipients().map((to) => ({
+            submissionId: submission.id,
+            to,
+            subject: "New watch submission awaits review",
+            text:
+              "A new " +
+              watch.brand +
+              " " +
+              watch.model +
+              " is awaiting review. Open " +
+              process.env.APP_ORIGIN +
+              "/admin. Reference: " +
+              submission.id,
           })),
-        },
-      },
+        ],
+      });
+      return submission;
     });
-
-    // 4. Send email notifications
-    const formattedPrice = formatNAD(priceInCents);
-    const adminAlertText = `A new watch has been submitted for consignment / sale review.\n\n` +
-      `Timepiece: ${brand} ${model} ${referenceNumber ? `(Ref. ${referenceNumber})` : ""}\n` +
-      `Asking Price: ${formattedPrice}\n` +
-      `Seller: ${fullName} (${email}, ${phone})\n` +
-      `Preferred Contact: ${preferredContactMethod}\n` +
-      `Condition: ${condition}\n` +
-      `Box & Papers: Box: ${box ? "Yes" : "No"}, Papers: ${papers ? "Yes" : "No"}\n\n` +
-      `Please review this submission in the Atelier Admin Studio: ${process.env.APP_ORIGIN || "http://localhost:3000"}/admin`;
-
-    await sendEmailNotification({
-      to: process.env.ADMIN_EMAIL || BRAND.adminEmail,
-      subject: `[New Submission] ${brand} ${model} — ${formattedPrice}`,
-      text: adminAlertText,
+    saved = true;
+    after(async () => {
+      await tryFlushEmail();
     });
-
-    const sellerAckText = `Dear ${fullName},\n\n` +
-      `Thank you for submitting your ${brand} ${model} to ${BRAND.name}.\n\n` +
-      `Our horological curation team is reviewing your timepiece details and photographs. We will contact you via ${preferredContactMethod.toLowerCase()} within 1–2 business days.\n\n` +
-      `Submission Reference: ${submission.id.substring(0, 8).toUpperCase()}\n\n` +
-      `Kind regards,\nThe Atelier Concierge Team\n${BRAND.location}`;
-
-    await sendEmailNotification({
-      to: email,
-      subject: `Watch Submission Received: ${brand} ${model} [Ref: ${submission.id.substring(0, 8).toUpperCase()}]`,
-      text: sellerAckText,
-    });
-
     return Response.json(
-      {
-        success: true,
-        submissionId: submission.id,
-        referenceCode: submission.id.substring(0, 8).toUpperCase(),
-        message: "Your watch has been submitted successfully for curation review.",
-      },
+      { success: true, id: record.id, status: "PENDING_REVIEW" },
       { status: 201 },
     );
   } catch (error) {
+    if (keys.length && !saved)
+      await removeObjects(privateBucket(), keys).catch(() => {});
     return apiError(error);
   }
 }

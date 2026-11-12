@@ -1,17 +1,25 @@
 {
   "name": "atelier-timepieces",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --webpack --hostname 127.0.0.1 -p 3000",
+    "dev": "next dev --webpack --hostname 127.0.0.1 -p 3002",
     "build": "prisma generate && next build --webpack",
-    "start": "next start --hostname 127.0.0.1 -p 3000",
+    "start": "node scripts/start-production.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts",
+    "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
+    "test:browser": "playwright test",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed:demo": "tsx prisma/seed.ts --demo",
+    "db:admin": "tsx scripts/create-admin.ts",
+    "mail:flush": "node --conditions=react-server --import tsx scripts/email-worker.ts",
+    "retention:check": "node --conditions=react-server --import tsx scripts/retention.ts",
+    "retention:apply": "node --conditions=react-server --import tsx scripts/retention.ts --apply",
+    "pretest:browser": "node scripts/build-test-fixture.mjs"
   },
   "dependencies": {
     "next": "16.4.6",
@@ -22,10 +30,17 @@
     "pg": "^8.16.0",
     "@supabase/supabase-js": "^2.0.0",
     "@supabase/ssr": "^0.7.0",
-    "gsap": "3.15.1",
     "lucide-react": "^0.468.0",
     "zod": "4.6.7",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "motion": "^12.0.0",
+    "@radix-ui/react-dialog": "^1.1.0",
+    "@aws-sdk/client-s3": "^3.0.0",
+    "@aws-sdk/s3-request-presigner": "^3.0.0",
+    "sharp": "0.35.5",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^3.0.0"
   },
   "devDependencies": {
     "typescript": "^5.9.0",
@@ -38,5 +53,8 @@
     "prisma": "7.10.1",
     "tsx": "^4.20.0",
     "@playwright/test": "^1.65.0"
+  },
+  "overrides": {
+    "sharp": "$sharp"
   }
 }

@@ -1,19 +1,9 @@
 import type { NextConfig } from "next";
-
 const config: NextConfig = {
+  output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
-  serverExternalPackages: [
-    "better-sqlite3",
-    "@prisma/adapter-better-sqlite3",
-    "@prisma/client",
-    "pg",
-  ],
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "30mb",
-    },
-  },
+  serverExternalPackages: ["@prisma/client", "@prisma/adapter-pg", "sharp"],
   async headers() {
     return [
       {
@@ -27,5 +17,4 @@ const config: NextConfig = {
     ];
   },
 };
-
 export default config;

@@ -1,116 +1,71 @@
+import "server-only";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { db } from "./db";
-import { signPayload, verifySessionToken } from "./crypto";
-
-export * from "./crypto";
-
-export class HttpError extends Error {
-  constructor(
-    public status: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = "HttpError";
-  }
-}
-
-const SESSION_COOKIE_NAME = "atelier_admin_session";
-const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days in seconds
-
-/**
- * Create and set HTTP-only admin session cookie
- */
-export async function createAdminSession(user: { id: string; email: string; role: string }) {
-  const payload = JSON.stringify({
-    userId: user.id,
-    email: user.email,
-    role: user.role,
-    exp: Date.now() + SESSION_MAX_AGE * 1000,
-  });
-
-  const token = await signPayload(payload);
-  const cookieJar = await cookies();
-  cookieJar.set(SESSION_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: SESSION_MAX_AGE,
-  });
-}
-
-/**
- * Destroy admin session cookie
- */
-export async function destroyAdminSession() {
-  const cookieJar = await cookies();
-  cookieJar.delete(SESSION_COOKIE_NAME);
-}
-
-/**
- * Get current authenticated admin user from session
- */
-export async function getAdmin() {
-  try {
-    const cookieJar = await cookies();
-    const token = cookieJar.get(SESSION_COOKIE_NAME)?.value;
-    if (!token) return null;
-
-    const session = await verifySessionToken(token);
-    if (!session) return null;
-
-    const user = await db.adminUser.findUnique({
-      where: { id: session.userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        createdAt: true,
+import { db, databaseConfigured, authConfigured } from "./db";
+import type { Role } from "@prisma/client";
+import { HttpError } from "./errors";
+export { HttpError, apiError } from "./errors";
+export async function authClient() {
+  const jar = await cookies();
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    {
+      cookies: {
+        getAll: () => jar.getAll(),
+        setAll(values) {
+          try {
+            values.forEach(({ name, value, options }) =>
+              jar.set(name, value, {
+                ...options,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+              }),
+            );
+          } catch {}
+        },
       },
-    });
-
-    return user;
-  } catch {
-    return null;
-  }
+    },
+  );
 }
-
-/**
- * Require admin authentication with role check
- */
-export async function requireAdmin(allowedRoles: string[] = ["OWNER", "EDITOR", "REVIEWER"]) {
+export async function getAdmin() {
+  if (!databaseConfigured || !authConfigured) return null;
+  const client = await authClient();
+  const {
+    data: { user },
+    error,
+  } = await client.auth.getUser();
+  if (error || !user) return null;
+  return db.adminUser.findUnique({ where: { id: user.id } });
+}
+export async function requireAdmin(
+  roles: Role[] = ["OWNER", "EDITOR", "REVIEWER"],
+) {
+  if (!databaseConfigured || !authConfigured)
+    throw new HttpError(503, "Admin authentication is not configured.");
   const admin = await getAdmin();
-  if (!admin) {
-    throw new HttpError(401, "Authentication required. Please sign in to the Atelier Studio.");
-  }
-  if (!allowedRoles.includes(admin.role)) {
-    throw new HttpError(403, "Access denied. Insufficient administrative privileges.");
-  }
+  if (!admin)
+    throw new HttpError(
+      401,
+      "Sign in with an authorized administrator account.",
+    );
+  if (!roles.includes(admin.role))
+    throw new HttpError(403, "Your role does not allow this action.");
   return admin;
 }
-
-/**
- * CSRF / Origin Validation
- */
 export function checkOrigin(req: Request) {
-  if (process.env.NODE_ENV === "development") return;
-  const origin = req.headers.get("origin");
-  const requestUrl = new URL(req.url);
-  const host = req.headers.get("host") || requestUrl.host;
-  const allowed = process.env.APP_ORIGIN;
-  if (allowed && origin && origin !== allowed) {
-    throw new HttpError(403, "Untrusted request origin.");
-  }
-}
-
-/**
- * Standard API error formatter
- */
-export function apiError(error: unknown) {
-  if (error instanceof HttpError) {
-    return Response.json({ error: error.message }, { status: error.status });
-  }
-  console.error("Internal Server Error:", error);
-  return Response.json({ error: "An unexpected error occurred. Please try again." }, { status: 500 });
+  const origin = req.headers.get("origin"),
+    url = new URL(req.url),
+    host = req.headers.get("host") || url.host;
+  const allowed = process.env.APP_ORIGIN
+    ? [process.env.APP_ORIGIN]
+    : process.env.NODE_ENV === "production" &&
+        databaseConfigured &&
+        authConfigured
+      ? []
+      : [url.origin, url.protocol + "//" + host];
+  if (!origin || !allowed.includes(origin))
+    throw new HttpError(403, "Request origin is not allowed.");
 }
