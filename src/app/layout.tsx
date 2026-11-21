@@ -5,8 +5,16 @@ import "@fontsource/cormorant-garamond/latin-600.css";
 import "@fontsource/cormorant-garamond/latin-500-italic.css";
 import "@fontsource-variable/inter/index.css";
 import "./globals.css";
+import { themeScript } from "@/components/theme-toggle";
+import { WhatsAppFloat } from "@/components/whatsapp-float";
 
-export const viewport: Viewport = { themeColor: "#0e1a2b" };
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b111c" },
+  ],
+  colorScheme: "light dark",
+};
 
 // Computed per request: on Cloudflare Workers, APP_ORIGIN is only available
 // once a request arrives, not when this module is first loaded.
@@ -41,8 +49,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en-NA">
-      <body>{children}</body>
+    <html lang="en-NA" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body>
+        {children}
+        <WhatsAppFloat />
+      </body>
     </html>
   );
 }

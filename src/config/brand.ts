@@ -6,9 +6,10 @@ export const brand = {
   descriptor: "NAMIBIA",
   tagline: "Pre-owned luxury watches, checked and listed in Windhoek.",
   location: "Windhoek, Namibia",
-  email: "hello@your-boutique.example",
-  phone: "Contact number to be confirmed",
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
+  email: "Paulo@luxurytimenam.com",
+  phone: "+264 81 249 2739",
+  // International format, digits only. NEXT_PUBLIC_WHATSAPP_NUMBER overrides it.
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "264812492739",
   instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL || "",
   facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL || "",
   heroImage: "/images/hero.webp",

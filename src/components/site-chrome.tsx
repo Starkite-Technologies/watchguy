@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { ThemeToggle } from "./theme-toggle";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -68,6 +69,7 @@ export function Header() {
         </nav>
         <div className="header-actions">
           <span className="market-label">NAMIBIA / N$</span>
+          <ThemeToggle />
           <Link href="/collection?focus=search" aria-label="Search watches">
             <Search size={18} />
           </Link>
@@ -143,9 +145,11 @@ export function Footer() {
             <br />
             {brand.location}
           </p>
-          <span className="footer-placeholder">
-            BUSINESS CONTACT DETAILS TO BE CONFIRMED
-          </span>
+          <p className="footer-contact">
+            <a href={"mailto:" + brand.email}>{brand.email}</a>
+            <br />
+            <a href={"tel:" + brand.phone.replace(/\s/g, "")}>{brand.phone}</a>
+          </p>
         </div>
         <div className="footer-links">
           <span>EXPLORE</span>
@@ -184,6 +188,14 @@ export function Footer() {
         <div>
           <Link href="/privacy">Privacy policy</Link>
           <Link href="/terms">Terms & conditions</Link>
+          <a
+            href="https://www.starkitetechnologies.com/"
+            target="_blank"
+            rel="noopener"
+            className="footer-credit"
+          >
+            Designed by Starkite Technologies
+          </a>
         </div>
       </div>
     </footer>
