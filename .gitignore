@@ -10,6 +10,7 @@ tsconfig.tsbuildinfo
 
 .env.*
 !.env.example
+!.env.production
 !**/.env.production.example
 *.db
 *.db-*

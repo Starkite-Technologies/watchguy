@@ -20,7 +20,7 @@
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "REPLACE_WITH_HYPERDRIVE_ID"
+      "id": "b4f54b6f42ab428281a69bcf95c13917"
     }
   ],
   // Flush the email outbox every minute (worker.ts -> /api/internal/mail-flush).
@@ -34,6 +34,17 @@
     "S3_PRIVATE_BUCKET": "atelier-submissions",
     "S3_PUBLIC_BUCKET": "atelier-watches",
     "S3_FORCE_PATH_STYLE": "true",
-    "REJECTED_RETENTION_DAYS": "90"
-  }
+    "REJECTED_RETENTION_DAYS": "90",
+    "APP_ORIGIN": "https://watchguy.babies-tods-public-site.workers.dev",
+    // Public values (also baked into the browser bundle from .env.production).
+    "NEXT_PUBLIC_SUPABASE_URL": "https://sdcxmjqxyvikdathhluq.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_mlXKwqUXoEZ0G1SVuUrvrw_px6SB138",
+    "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGMMPxBm6AwcdEZD",
+    // Supabase Storage (S3 protocol). Access keys are Worker secrets.
+    "S3_REGION": "eu-west-1",
+    "S3_ENDPOINT": "https://sdcxmjqxyvikdathhluq.storage.supabase.co/storage/v1/s3",
+    "PUBLIC_ASSET_BASE_URL": "https://sdcxmjqxyvikdathhluq.supabase.co/storage/v1/object/public/atelier-watches"
+  },
+  // Dashboard secrets (Settings > Variables and Secrets) are kept on deploy.
+  "keep_vars": true
 }
