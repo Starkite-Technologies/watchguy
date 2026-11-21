@@ -81,6 +81,13 @@ model Watch {
  papers Boolean @default(false)
  diameter String?
  movement String?
+ caseMaterial String?
+ dial String?
+ bracelet String?
+ waterResistance String?
+ writeUp String?
+ seoTitle String?
+ seoDescription String?
  images WatchImage[]
  enquiries Enquiry[]
  createdAt DateTime @default(now())

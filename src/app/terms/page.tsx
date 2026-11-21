@@ -5,7 +5,7 @@ export default function Terms() {
     <>
       <Header />
       <main className="page-main section-wrap legal-page">
-        <SectionLabel>TERMS & CONDITIONS ? PRE-LAUNCH DRAFT</SectionLabel>
+        <SectionLabel>TERMS & CONDITIONS — PRE-LAUNCH DRAFT</SectionLabel>
         <h1>
           Clear details.
           <br />
@@ -44,7 +44,7 @@ export default function Terms() {
           The operator must supply reviewed sale terms, commission and
           consignment arrangements, payment and delivery terms, returns, legal
           identity, dispute procedures and applicable privacy information. These
-          draft terms are not a substitute for the client?s final policies.
+          draft terms are not a substitute for the client’s final policies.
         </p>
       </main>
       <Footer />

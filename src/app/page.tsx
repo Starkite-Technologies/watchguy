@@ -53,13 +53,13 @@ export default async function Home() {
             <div className="empty-state">
               <h3>A considered selection is on its way.</h3>
               <Link className="text-link" href="/collection">
-                Explore the collection ?
+                Explore the collection →
               </Link>
             </div>
           )}
           {demoEnabled() && (
             <p className="demo-caption">
-              DESIGN PREVIEW ? FICTIONAL WATCHES & ORIGINAL UNBRANDED CONCEPT
+              DESIGN PREVIEW — FICTIONAL WATCHES & ORIGINAL UNBRANDED CONCEPT
               IMAGERY
             </p>
           )}

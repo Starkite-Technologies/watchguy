@@ -15,14 +15,14 @@ export default async function Contact() {
         <div>
           <SectionLabel>A PERSONAL CONNECTION</SectionLabel>
           <h1>
-            Let?s make
+            Let’s make
             <br />
             <em>time to talk.</em>
           </h1>
           <p>
             A particular timepiece in mind? A story to share?
             <br />
-            We?d love to hear from you.
+            We’d love to hear from you.
           </p>
           <dl className="contact-details">
             <div>

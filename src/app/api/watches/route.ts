@@ -11,7 +11,11 @@ const schema = z.object({
     .optional(),
   minPrice: z.coerce.number().nonnegative().max(100000000).optional(),
   maxPrice: z.coerce.number().nonnegative().max(100000000).optional(),
-  sort: z.enum(["newest", "price-low", "price-high"]).optional(),
+  boxPapers: z
+    .enum(["true", "false"])
+    .transform((v) => v === "true")
+    .optional(),
+  sort: z.enum(["newest", "price-low", "price-high", "brand-az"]).optional(),
   page: z.coerce.number().int().min(1).max(10000).default(1),
 });
 export async function GET(req: Request) {

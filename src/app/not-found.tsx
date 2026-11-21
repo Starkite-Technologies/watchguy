@@ -9,7 +9,7 @@ export default function Page() {
         <h1>This page is unavailable.</h1>
         <p>The timepiece may have moved on to its next chapter.</p>
         <Link className="button button-dark" href="/collection">
-          Explore the collection ?
+          Explore the collection →
         </Link>
       </main>
       <Footer />

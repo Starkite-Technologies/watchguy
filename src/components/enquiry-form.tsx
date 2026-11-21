@@ -5,9 +5,11 @@ import { BotCheck } from "./bot-check";
 export function EnquiryForm({
   watchId,
   watchName,
+  initialMessage,
 }: {
   watchId?: string;
   watchName?: string;
+  initialMessage?: string;
 }) {
   const [working, setWorking] = useState(false),
     [error, setError] = useState(""),
@@ -20,7 +22,7 @@ export function EnquiryForm({
         <Check size={35} />
         <h2>A conversation has begun.</h2>
         <p>
-          Your enquiry has been saved for our team. We?ll be in touch using the
+          Your enquiry has been saved for our team. We’ll be in touch using the
           details you provided.
         </p>
       </div>
@@ -92,11 +94,12 @@ export function EnquiryForm({
           required
           maxLength={2000}
           defaultValue={
-            watchName
-              ? "Hello, I?m interested in " +
+            initialMessage ??
+            (watchName
+              ? "Hello, I’m interested in " +
                 watchName +
                 ". Please confirm availability, condition and the next steps."
-              : ""
+              : "")
           }
         />
       </label>

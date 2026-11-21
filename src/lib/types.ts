@@ -10,9 +10,17 @@ export type Watch = {
   year: number | null;
   diameter: string | null;
   movement: string | null;
+  caseMaterial?: string | null;
+  dial?: string | null;
+  bracelet?: string | null;
+  waterResistance?: string | null;
+  writeUp?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   description: string;
   defects?: string;
   images: string[];
+  imageCount?: number;
   availability: "AVAILABLE" | "RESERVED" | "SOLD" | "ARCHIVED";
   sellerType: "STORE" | "THIRD_PARTY";
   featured: boolean;

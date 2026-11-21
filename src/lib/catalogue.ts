@@ -6,7 +6,9 @@ import type { Watch as DbWatch, WatchImage } from "@prisma/client";
 export const demoEnabled = () =>
   !databaseConfigured() &&
   (process.env.NODE_ENV === "development" || process.env.DEMO_MODE === "true");
-export function watchDto(row: DbWatch & { images: WatchImage[] }): Watch {
+export function watchDto(
+  row: DbWatch & { images: WatchImage[]; _count?: { images: number } },
+): Watch {
   return {
     id: row.id,
     demo: row.isDemo,
@@ -20,11 +22,19 @@ export function watchDto(row: DbWatch & { images: WatchImage[] }): Watch {
     year: row.year,
     diameter: row.diameter,
     movement: row.movement,
+    caseMaterial: row.caseMaterial,
+    dial: row.dial,
+    bracelet: row.bracelet,
+    waterResistance: row.waterResistance,
+    writeUp: row.writeUp,
+    seoTitle: row.seoTitle,
+    seoDescription: row.seoDescription,
     description: row.description,
     defects: row.defects,
     images: [...row.images]
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map((i) => i.imageUrl),
+    imageCount: row._count?.images ?? row.images.length,
     availability: row.availability,
     sellerType: row.sellerType,
     featured: row.featured,

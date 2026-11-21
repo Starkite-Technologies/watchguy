@@ -1,13 +1,13 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
-  ArrowLeft,
-  ArrowUpRight,
-  MessageCircle,
   ChevronLeft,
   ChevronRight,
-  LockKeyhole,
+  MessageCircle,
+  Mail,
+  HandCoins,
+  Check,
+  Minus,
 } from "lucide-react";
 import type { Watch } from "@/lib/types";
 import { money } from "@/lib/demo";
@@ -19,185 +19,190 @@ import {
   DialogDescription,
 } from "./ui/dialog";
 import { EnquiryForm } from "./enquiry-form";
+
+/** Gallery, price and buying actions for one watch. */
 export function WatchDetail({ watch, demo }: { watch: Watch; demo: boolean }) {
   const [photo, setPhoto] = useState(0),
-    [open, setOpen] = useState(false),
+    [dialog, setDialog] = useState<null | "enquire" | "offer">(null),
     [url, setUrl] = useState("");
   useEffect(() => setUrl(window.location.href), []);
+  const name = [watch.brand, watch.model].join(" ");
+  const fullName = [name, watch.reference].filter(Boolean).join(" ");
   const message =
-    "Hello, I?m interested in the " +
-    watch.brand +
-    " " +
-    watch.model +
-    (watch.reference ? " (reference " + watch.reference + ")" : "") +
+    "Hello, I’m interested in the " +
+    fullName +
     ", listed at " +
     money(watch.price) +
-    ". Please confirm availability and condition. " +
+    ". Is it still available? " +
     url;
   const whatsapp = brand.whatsapp.replace(/\D/g, "");
+  const reserved = watch.availability === "RESERVED";
+  const count = watch.images.length;
+  const go = (step: number) => setPhoto((photo + step + count) % count);
   return (
-    <main className="detail-main section-wrap">
-      <Link className="back-link" href="/collection">
-        <ArrowLeft size={14} />
-        Back to the collection
-      </Link>
-      <div className="detail-layout">
-        <div>
-          <div
-            className={
-              "detail-photo " +
-              (watch.images[photo]?.includes("hero") ? "dark-image" : "")
-            }
-          >
-            <img
-              src={watch.images[photo]}
-              alt={
-                watch.brand + " " + watch.model + " ? photograph " + (photo + 1)
-              }
-            />
-            <span className="watch-badge">
-              {demo ? "DEMO PIECE" : watch.condition}
-            </span>
-            {watch.images.length > 1 && (
-              <div className="gallery-controls">
+    <>
+      <div className="lt-detail">
+        <div className="lt-gallery">
+          <div className="lt-gallery-main">
+            {watch.images[photo] && (
+              <img
+                src={watch.images[photo]}
+                alt={`${fullName}, photo ${photo + 1} of ${count}`}
+                fetchPriority={photo === 0 ? "high" : "auto"}
+              />
+            )}
+            {count > 1 && (
+              <>
                 <button
-                  aria-label="Previous photograph"
-                  onClick={() =>
-                    setPhoto(
-                      (photo - 1 + watch.images.length) % watch.images.length,
-                    )
-                  }
+                  className="lt-gallery-nav prev"
+                  aria-label="Previous photo"
+                  onClick={() => go(-1)}
                 >
                   <ChevronLeft size={20} />
                 </button>
-                <span>
-                  {photo + 1} / {watch.images.length}
-                </span>
                 <button
-                  aria-label="Next photograph"
-                  onClick={() => setPhoto((photo + 1) % watch.images.length)}
+                  className="lt-gallery-nav next"
+                  aria-label="Next photo"
+                  onClick={() => go(1)}
                 >
                   <ChevronRight size={20} />
                 </button>
-              </div>
+                <span className="lt-gallery-count">
+                  {photo + 1} / {count}
+                </span>
+              </>
             )}
           </div>
-          <div className="photo-thumbnails">
-            {watch.images.map((image, i) => (
-              <button
-                key={image}
-                className={photo === i ? "active" : ""}
-                onClick={() => setPhoto(i)}
-                aria-label={"View photograph " + (i + 1)}
-                aria-pressed={photo === i}
-              >
-                <img src={image} alt="" />
-              </button>
-            ))}
-          </div>
+          {count > 1 && (
+            <div className="lt-thumbs">
+              {watch.images.map((image, i) => (
+                <button
+                  key={image}
+                  className={photo === i ? "active" : ""}
+                  onClick={() => setPhoto(i)}
+                  aria-label={"Show photo " + (i + 1)}
+                  aria-pressed={photo === i}
+                >
+                  <img src={image} alt="" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          )}
           {demo && (
-            <p className="field-note">
-              Original unbranded concept imagery. This development record does
-              not represent an actual watch for sale.
+            <p className="lt-demo-note">
+              Illustrative concept photo. This demo listing is not a real watch
+              for sale.
             </p>
           )}
         </div>
-        <div className="detail-copy">
-          <div className="eyebrow">
-            {watch.brand} /{" "}
-            {watch.sellerType === "STORE"
-              ? "COMPANY INVENTORY"
-              : "APPROVED THIRD-PARTY LISTING"}
-          </div>
+
+        <div className="lt-summary">
+          <p className="lt-card-brand">{watch.brand}</p>
           <h1>{watch.model}</h1>
           {watch.reference && (
-            <span className="reference">REFERENCE {watch.reference}</span>
+            <p className="lt-summary-ref">Reference {watch.reference}</p>
           )}
-          <div className="detail-price">
+          <ul className="lt-facts" aria-label="Key details">
+            <li>{watch.box ? <Check size={15} /> : <Minus size={15} />} Box</li>
+            <li>
+              {watch.papers ? <Check size={15} /> : <Minus size={15} />} Papers
+            </li>
+            {watch.year && <li>Year {watch.year}</li>}
+            <li>Condition: {watch.condition}</li>
+          </ul>
+          <p className="lt-summary-price">
             {money(watch.price)}
-            <span
-              className={
-                "availability " +
-                (watch.availability === "RESERVED" ? "reserved" : "")
-              }
-            >
-              <i />
-              {watch.availability === "RESERVED" ? "Reserved" : "Available"}
-            </span>
-          </div>
-          <p>{watch.description}</p>
-          <dl className="detail-specs">
-            {[
-              ["Condition", watch.condition],
-              ["Year", watch.year || "On request"],
-              ["Case diameter", watch.diameter || "On request"],
-              ["Movement", watch.movement || "On request"],
-              ["Original box", watch.box ? "Included" : "Not included"],
-              ["Original papers", watch.papers ? "Included" : "Not included"],
-            ].map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="condition-note">
-            <strong>Condition notes</strong>
-            {watch.defects ||
-              "Please enquire for a detailed condition assessment."}
+            {reserved && (
+              <span className="lt-badge lt-badge-reserved">Reserved</span>
+            )}
           </p>
-          {whatsapp ? (
-            <a
-              href={
-                "https://wa.me/" +
-                whatsapp +
-                "?text=" +
-                encodeURIComponent(message)
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="button button-dark full"
-            >
-              Enquire on WhatsApp <MessageCircle size={17} />
-            </a>
-          ) : (
-            <button
-              className="button button-dark full"
-              onClick={() => setOpen(true)}
-            >
-              Enquire about this watch <ArrowUpRight size={17} />
-            </button>
-          )}
-          <button
-            className="button button-outline full"
-            onClick={() => setOpen(true)}
-          >
-            Contact about this watch <ArrowUpRight size={17} />
-          </button>
-          <p className="detail-disclaimer">
-            <LockKeyhole size={15} />
-            Availability, condition and purchase arrangements are confirmed in
-            conversation with the boutique.
+          <p className="lt-summary-seller">
+            {watch.sellerType === "STORE"
+              ? `From ${brand.name}'s own collection`
+              : "Listed for a private seller, reviewed by our team"}
+          </p>
+          <div className="lt-actions">
+            {whatsapp ? (
+              <a
+                className="lt-button"
+                href={
+                  "https://wa.me/" +
+                  whatsapp +
+                  "?text=" +
+                  encodeURIComponent(message)
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle size={17} aria-hidden="true" /> Enquire on
+                WhatsApp
+              </a>
+            ) : (
+              <button
+                className="lt-button"
+                onClick={() => setDialog("enquire")}
+              >
+                <Mail size={17} aria-hidden="true" /> Enquire about this watch
+              </button>
+            )}
+            {!reserved && (
+              <button
+                className="lt-button lt-button-outline"
+                onClick={() => setDialog("offer")}
+              >
+                <HandCoins size={17} aria-hidden="true" /> Make an offer
+              </button>
+            )}
+            {whatsapp && (
+              <button
+                className="lt-button lt-button-ghost"
+                onClick={() => setDialog("enquire")}
+              >
+                <Mail size={17} aria-hidden="true" /> Email us instead
+              </button>
+            )}
+          </div>
+          <p className="lt-reassure">
+            Viewings in {brand.location.split(",")[0]} by appointment. Price,
+            availability and condition are confirmed with you before any
+            payment.
           </p>
         </div>
       </div>
-      <Dialog open={open} onOpenChange={setOpen}>
+
+      <div className="lt-sticky-bar" aria-hidden={dialog !== null}>
+        <div>
+          <strong>{name}</strong>
+          <span>{money(watch.price)}</span>
+        </div>
+        <button className="lt-button" onClick={() => setDialog("enquire")}>
+          Enquire
+        </button>
+      </div>
+
+      <Dialog
+        open={dialog !== null}
+        onOpenChange={(o) => !o && setDialog(null)}
+      >
         <DialogContent>
-          <DialogTitle className="dialog-heading">A closer look.</DialogTitle>
+          <DialogTitle className="dialog-heading">
+            {dialog === "offer" ? "Make an offer" : "Ask about this watch"}
+          </DialogTitle>
           <DialogDescription>
-            {watch.brand} {watch.model} ? {money(watch.price)}
+            {fullName} — {money(watch.price)}
           </DialogDescription>
           <EnquiryForm
+            key={dialog || "closed"}
             watchId={watch.id}
-            watchName={
-              watch.brand +
-              " " +
-              watch.model +
-              (watch.reference ? " ? " + watch.reference : "")
+            watchName={fullName}
+            initialMessage={
+              dialog === "offer"
+                ? `Hello, I would like to offer N$ [your amount] for the ${fullName} (listed at ${money(watch.price)}).`
+                : undefined
             }
           />
         </DialogContent>
       </Dialog>
-    </main>
+    </>
   );
 }

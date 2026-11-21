@@ -1,28 +1,47 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { brand } from "@/config/brand";
+import "@fontsource/cormorant-garamond/latin-500.css";
+import "@fontsource/cormorant-garamond/latin-600.css";
+import "@fontsource/cormorant-garamond/latin-500-italic.css";
+import "@fontsource-variable/inter/index.css";
 import "./globals.css";
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_ORIGIN || "http://localhost:3002"),
-  title: {
-    default: brand.name + " ? Exceptional Watches in Namibia",
-    template: "%s | " + brand.name,
-  },
-  description:
-    brand.tagline +
-    " Explore a considered selection of watches in Namibia, or submit your timepiece for private review.",
-  robots: {
-    index: process.env.DEMO_MODE !== "true",
-    follow: process.env.DEMO_MODE !== "true",
-  },
-  openGraph: { title: brand.name, description: brand.tagline, type: "website" },
-};
+
+export const viewport: Viewport = { themeColor: "#0e1a2b" };
+
+// Computed per request: on Cloudflare Workers, APP_ORIGIN is only available
+// once a request arrives, not when this module is first loaded.
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = process.env.APP_ORIGIN || "http://localhost:3002";
+  const index = process.env.DEMO_MODE !== "true";
+  return {
+    metadataBase: new URL(origin),
+    title: {
+      default: brand.name + " — Pre-owned Luxury Watches in Windhoek",
+      template: "%s | " + brand.name,
+    },
+    description:
+      "Buy and sell pre-owned luxury watches in Namibia. Browse Rolex, Omega, Tudor, TAG Heuer and more, with photos, condition and prices in N$, or submit your watch for review.",
+    applicationName: brand.name,
+    robots: { index, follow: index },
+    openGraph: {
+      siteName: brand.name,
+      title: brand.name,
+      description: brand.tagline,
+      type: "website",
+      locale: "en_NA",
+      url: origin,
+    },
+    twitter: { card: "summary_large_image" },
+  };
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en-NA">
       <body>{children}</body>
     </html>
   );

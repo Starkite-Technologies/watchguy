@@ -9,7 +9,7 @@ export default function ErrorPage({ reset }: { reset: () => void }) {
         complete.
       </p>
       <button className="button button-dark" onClick={reset}>
-        Try again ?
+        Try again →
       </button>
     </main>
   );

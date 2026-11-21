@@ -62,7 +62,7 @@ export function Header() {
       <header className={"site-header " + (light ? "light" : "")}>
         <Logo dark={light} />
         <nav className="desktop-nav" aria-label="Main navigation">
-          <Link href="/collection">The collection</Link>
+          <Link href="/collection">Buy watches</Link>
           <Link href="/about">Our story</Link>
           <Link href="/sell">Sell your watch</Link>
         </nav>
@@ -93,7 +93,7 @@ export function Header() {
           <nav aria-label="Mobile navigation">
             {[
               ["/", "Home"],
-              ["/collection", "The collection"],
+              ["/collection", "Buy watches"],
               ["/about", "Our story"],
               ["/sell", "Sell your watch"],
               ["/contact", "Contact"],
@@ -131,7 +131,7 @@ export function Footer() {
           className="footer-chat"
         >
           {whatsapp ? <MessageCircle size={20} /> : null}
-          <span>{whatsapp ? "Chat on WhatsApp" : "Let?s talk time"}</span>
+          <span>{whatsapp ? "Chat on WhatsApp" : "Let’s talk time"}</span>
           <ArrowUpRight size={25} />
         </Link>
       </div>
@@ -161,14 +161,14 @@ export function Footer() {
               Instagram <ArrowUpRight size={12} />
             </a>
           ) : (
-            <span className="placeholder-social">Instagram ? coming soon</span>
+            <span className="placeholder-social">Instagram — coming soon</span>
           )}
           {brand.facebook ? (
             <a href={brand.facebook} target="_blank" rel="noopener noreferrer">
               Facebook <ArrowUpRight size={12} />
             </a>
           ) : (
-            <span className="placeholder-social">Facebook ? coming soon</span>
+            <span className="placeholder-social">Facebook — coming soon</span>
           )}
           <p>
             Considered timepieces.
@@ -179,7 +179,7 @@ export function Footer() {
       </div>
       <div className="footer-bottom">
         <span>
-          ? {new Date().getFullYear()} {brand.name}
+          © {new Date().getFullYear()} {brand.name}
         </span>
         <div>
           <Link href="/privacy">Privacy policy</Link>
