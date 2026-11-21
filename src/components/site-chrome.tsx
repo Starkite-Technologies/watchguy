@@ -18,28 +18,39 @@ import {
   DialogDescription,
   DialogClose,
 } from "./ui/dialog";
-export function Logo({ dark = false }: { dark?: boolean }) {
-  const logo = dark ? brand.logoDarkUrl || brand.logoUrl : brand.logoUrl;
+/**
+ * Brand lockup from the Luxury Time asset pack. `dark` means the logo sits on a
+ * light surface (green artwork); otherwise it sits on green/dark (cream
+ * artwork). Both images are rendered and CSS picks one, so dark mode always
+ * gets the cream version without a flash.
+ */
+export function Logo({
+  dark = false,
+  stacked = false,
+}: {
+  dark?: boolean;
+  stacked?: boolean;
+}) {
+  const kind = stacked ? "stacked" : "horizontal";
   return (
     <Link
       href="/"
-      className={"wordmark " + (dark ? "dark" : "")}
+      className={
+        "wordmark brand-logo " + kind + " " + (dark ? "on-light" : "on-dark")
+      }
       aria-label={brand.name + " home"}
     >
-      {logo ? (
-        <img className="custom-logo" src={logo} alt={brand.name} />
-      ) : (
-        <>
-          <span className="logo-symbol" aria-hidden="true">
-            <i />
-            <b />
-          </span>
-          <span>
-            {brand.shortName}
-            <small>{brand.descriptor}</small>
-          </span>
-        </>
-      )}
+      <img
+        className="logo-green"
+        src={"/brand/lt-lockup-" + kind + "-green.svg"}
+        alt={brand.name}
+      />
+      <img
+        className="logo-cream"
+        src={"/brand/lt-lockup-" + kind + "-cream.svg"}
+        alt=""
+        aria-hidden="true"
+      />
     </Link>
   );
 }
@@ -139,7 +150,7 @@ export function Footer() {
       </div>
       <div className="footer-main">
         <div>
-          <Logo />
+          <Logo stacked />
           <p>
             {brand.tagline}
             <br />

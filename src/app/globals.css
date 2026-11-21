@@ -1,29 +1,32 @@
 @import "tailwindcss" source("../");
 @theme inline {
-  --color-obsidian: #0e1a2b;
-  --color-ivory: #ffffff;
-  --color-champagne: #8c6d42;
+  --color-obsidian: #0b3d2e;
+  --color-ivory: #f4efe4;
+  --color-champagne: #7a5c2b;
   --font-sans: "Inter Variable", Inter, system-ui, sans-serif;
 }
 :root {
-  /* Luxury Time Namibia — "Gallery white" */
-  --ink: #0e1a2b; /* navy: text, dark sections */
-  --charcoal: #1c2a3d;
-  --ivory: #ffffff; /* page background */
-  --paper: #f6f4f0; /* soft panels behind photos and forms */
-  --gold: #8c6d42; /* champagne on white (4.9:1) */
-  --gold-light: #c8a96e; /* champagne on navy */
-  --muted: #5b6472;
-  --line: #e6e2da;
+  /* Luxury Time Namibia brand colours (asset pack brand-tokens.css) */
+  --ink: #1f2b26; /* body text on cream */
+  --charcoal: #082e22; /* green, pressed */
+  --ivory: #f4efe4; /* cream page background */
+  --paper: #eae4d7; /* cream-deep: panels behind photos and forms */
+  /* Brand gold #c9a86a is 2:1 on cream, so text accents on light surfaces use
+     a deeper shade of it; full gold is kept for green surfaces. */
+  --gold: #7a5c2b;
+  --gold-light: #c9a86a; /* gold on green */
+  --gold-soft: #d9c59a; /* gold hover */
+  --muted: #4a564f;
+  --line: #c9bfaa;
   --surface: #ffffff; /* cards, inputs, light header */
-  --navy: #0e1a2b; /* fixed dark surfaces: footer, buttons */
-  --on-dark: #ffffff;
+  --navy: #0b3d2e; /* brand green: header, footer, buttons */
+  --on-dark: #f4efe4; /* cream on green */
   --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --sans:
     "Inter Variable", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: light;
 }
-/* On navy surfaces, use the lighter champagne and greys. */
+/* On green surfaces, use full gold and lighter greys. */
 .site-header:not(.light),
 .site-footer,
 .cinematic-hero,
@@ -31,7 +34,7 @@
 .about-art,
 .dark-section {
   --gold: var(--gold-light);
-  --muted: #a3acb8;
+  --muted: #b7c4bb;
 }
 * {
   box-sizing: border-box;
@@ -50,7 +53,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 ::selection {
-  background: #8c6d4240;
+  background: #c9a86a55;
 }
 button,
 input,
@@ -139,7 +142,7 @@ em {
 .section-index {
   margin-left: auto;
   font-size: 14px;
-  color: #aca18d;
+  color: var(--gold);
 }
 .eyebrow {
   font-size: 14px;
@@ -164,7 +167,7 @@ em {
   color: white;
 }
 .button-dark:hover {
-  background: #303235;
+  background: var(--charcoal);
   color: white;
 }
 .button-ivory {
@@ -176,7 +179,7 @@ em {
   color: var(--ink);
 }
 .button-outline {
-  border-color: #c9c1b1;
+  border-color: var(--line);
   background: none;
 }
 .button-outline:hover {
@@ -199,7 +202,7 @@ em {
   gap: 40px;
   font-size: 16px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #b4a487;
+  border-bottom: 1px solid #c9a86a;
   white-space: nowrap;
 }
 .wordmark {
@@ -272,7 +275,7 @@ em {
   gap: 32px;
   color: white;
   border-bottom: 1px solid #ffffff13;
-  background: #0e1a2b22;
+  background: #0b3d2e33;
   backdrop-filter: blur(9px);
   transition: 0.25s;
 }
@@ -304,7 +307,7 @@ em {
 .market-label {
   font-size: 14px;
   letter-spacing: 0.12em;
-  color: #a79c86;
+  color: var(--muted);
 }
 .header-contact {
   display: inline-flex;
@@ -315,7 +318,7 @@ em {
   font-size: 16px;
 }
 .light .header-contact {
-  border-color: #bdb4a1;
+  border-color: var(--line);
 }
 .header-actions > a:not(.header-contact) {
   padding: 5px;
@@ -332,7 +335,7 @@ em {
   max-height: 1080px;
   overflow: hidden;
   color: white;
-  background: #0e1a2b;
+  background: #0b3d2e;
 }
 .hero-image {
   position: absolute;
@@ -357,7 +360,7 @@ em {
   display: flex;
   gap: 12px;
   align-items: center;
-  color: #c4b18e;
+  color: var(--gold);
 }
 .hero-kicker i {
   height: 1px;
@@ -390,7 +393,7 @@ em {
   align-items: center;
   gap: 24px;
   font-size: 16px;
-  border-bottom: 1px solid #a49375;
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
   padding-bottom: 10px;
 }
 .hero-bottom {
@@ -409,12 +412,12 @@ em {
   gap: 13px;
   font-size: 14px;
   letter-spacing: 0.13em;
-  color: #b7a98f;
+  color: var(--gold);
 }
 .scroll-icon {
   height: 35px;
   width: 35px;
-  border: 1px solid #8c7a5b;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -429,7 +432,7 @@ em {
   text-align: right;
   font-size: 14px;
   letter-spacing: 0.14em;
-  color: #c6b698;
+  color: var(--gold);
   line-height: 1.8;
 }
 .hero-product-note > span {
@@ -454,13 +457,13 @@ em {
   display: flex;
   align-items: center;
   gap: 20px;
-  color: #ac9c81;
+  color: var(--gold);
 }
 .intro-strip i {
   display: block;
   height: 1px;
   width: 22px;
-  background: #b8a587;
+  background: var(--gold);
 }
 .featured-section,
 .collection-section {
@@ -552,8 +555,8 @@ em {
   z-index: 2;
 }
 .dark-image .watch-badge {
-  background: #0e1a2b88;
-  color: #cab591;
+  background: #0b3d2e99;
+  color: #c9a86a;
 }
 .image-detail {
   position: absolute;
@@ -597,7 +600,7 @@ em {
   margin: 0;
 }
 .watch-meta > span {
-  color: #c0b299;
+  color: var(--gold);
 }
 .watch-price {
   display: flex;
@@ -642,7 +645,7 @@ em {
 }
 .demo-caption {
   font-size: 14px;
-  color: #b4a287;
+  color: var(--gold);
   letter-spacing: 0.12em;
   text-align: right;
   margin: 31px 0 0;
@@ -673,7 +676,7 @@ em {
   left: 7%;
   font-size: 14px;
   letter-spacing: 0.2em;
-  color: #bdaa89;
+  color: var(--gold);
 }
 .story-copy {
   display: flex;
@@ -693,7 +696,7 @@ em {
   margin: 30px 0 25px;
 }
 .story-copy h2 em {
-  color: #baa489;
+  color: var(--gold);
 }
 .story-copy > p {
   font-size: 16px;
@@ -702,8 +705,8 @@ em {
   margin-bottom: 30px;
 }
 .story-copy .text-link {
-  color: #d5c3a6;
-  border-color: #827052;
+  color: var(--gold);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
 }
 .story-footnote {
   font-size: 14px;
@@ -788,7 +791,7 @@ em {
   gap: 11px;
   align-items: center;
   padding-bottom: 10px;
-  border-bottom: 1px solid #caba9d;
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
   color: var(--muted);
 }
 .catalogue-search input:not([type="checkbox"]):not([type="file"]) {
@@ -805,7 +808,7 @@ em {
   align-items: center;
   gap: 9px;
   font-size: 14px;
-  color: #ac9775;
+  color: var(--gold);
   padding: 13px 0;
 }
 .collection-bottom {
@@ -815,7 +818,7 @@ em {
   gap: 25px;
   padding-top: 32px;
   font-size: 14px;
-  color: #af9a78;
+  color: var(--gold);
 }
 .collection-bottom .text-link {
   font-size: 14px;
@@ -855,7 +858,7 @@ em {
 }
 .sell-steps > div > span {
   font-size: 16px;
-  color: #bba27b;
+  color: var(--gold);
   margin-top: 6px;
 }
 .sell-steps h3 {
@@ -873,7 +876,7 @@ em {
 }
 .sell-steps svg {
   margin-left: auto;
-  color: #b29a75;
+  color: var(--gold);
   margin-top: 6px;
 }
 .site-footer {
@@ -896,7 +899,7 @@ em {
   margin: 20px 0 0;
 }
 .footer-intro h2 em {
-  color: #c0a98a;
+  color: var(--gold);
 }
 .footer-chat {
   display: flex;
@@ -905,7 +908,7 @@ em {
   min-width: 260px;
   font-size: 16px;
   padding-bottom: 15px;
-  border-bottom: 1px solid #8c7451;
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
 }
 .footer-chat > svg:last-child {
   margin-left: auto;
@@ -942,7 +945,7 @@ em {
 }
 .footer-links > a {
   font-size: 16px;
-  color: #c3b298;
+  color: var(--gold);
   display: flex;
   gap: 20px;
   align-items: center;
@@ -953,7 +956,7 @@ em {
 }
 .footer-links > p {
   font-size: 14px !important;
-  color: #7b674c !important;
+  color: var(--gold) !important;
   margin-top: 10px !important;
 }
 .footer-bottom {
@@ -1024,7 +1027,7 @@ em {
   margin: 0 0 10px;
 }
 .empty-state svg {
-  color: #b59663;
+  color: var(--gold);
 }
 .page-main.empty-state {
   padding-top: 180px;
@@ -1098,7 +1101,7 @@ em {
   background: var(--paper);
 }
 .photo-thumbnails button.active {
-  border-color: #ac8e5e;
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
 }
 .photo-thumbnails img {
   height: 100%;
@@ -1170,7 +1173,7 @@ em {
   gap: 10px;
   align-items: flex-start;
   font-size: 14px;
-  color: #b29970;
+  color: var(--gold);
   margin-top: 23px;
 }
 .detail-disclaimer svg {
@@ -1180,7 +1183,7 @@ em {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: #0e1a2bb3;
+  background: #082e22b3;
   backdrop-filter: blur(6px);
 }
 .dialog-content {
@@ -1243,11 +1246,11 @@ em {
 .mobile-menu-dialog nav a > span {
   font-family: var(--sans);
   font-size: 14px;
-  color: #bba079;
+  color: var(--gold);
 }
 .mobile-menu-dialog nav a > svg {
   margin-left: auto;
-  color: #b49970;
+  color: var(--gold);
 }
 .form-grid {
   display: grid;
@@ -1275,7 +1278,7 @@ textarea {
 }
 input::placeholder,
 textarea::placeholder {
-  color: #bba784;
+  color: color-mix(in srgb, var(--muted) 70%, transparent);
 }
 textarea {
   resize: vertical;
@@ -1312,7 +1315,7 @@ input[type="checkbox"] {
 .form-error {
   padding: 13px 15px;
   background: var(--paper);
-  border: 1px solid #e2c4b3;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
   color: var(--muted);
   font-size: 16px;
   line-height: 1.7;
@@ -1320,7 +1323,7 @@ input[type="checkbox"] {
 }
 .field-note {
   font-size: 14px;
-  color: #b09874;
+  color: var(--gold);
   line-height: 1.8;
   margin: 15px 0;
 }
@@ -1383,7 +1386,7 @@ input[type="checkbox"] {
   max-width: 330px;
 }
 .sell-promise svg {
-  color: #b99a6b;
+  color: var(--gold);
   margin-top: 2px;
 }
 .sell-promise strong {
@@ -1392,7 +1395,7 @@ input[type="checkbox"] {
 }
 .sell-promise p {
   font-size: 16px;
-  color: #b39770;
+  color: var(--gold);
   margin: 9px 0 0;
   line-height: 1.8;
 }
@@ -1410,13 +1413,13 @@ input[type="checkbox"] {
   gap: 12px;
   flex: 1;
   position: relative;
-  color: #c2ac89;
+  color: var(--gold);
   padding: 0;
 }
 .form-progress button > span {
   height: 31px;
   width: 31px;
-  border: 1px solid #dac8ac;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
   background: var(--ivory);
   font-size: 14px;
   display: grid;
@@ -1473,7 +1476,7 @@ input[type="checkbox"] {
 }
 .step-title p {
   font-size: 16px;
-  color: #b3976d;
+  color: var(--gold);
   margin: 0;
 }
 .step-title > .eyebrow {
@@ -1486,13 +1489,13 @@ input[type="checkbox"] {
   padding-top: 25px;
   border-top: 1px solid var(--line);
   margin-top: 28px;
-  color: #b89a69;
+  color: var(--gold);
 }
 .form-privacy p {
   font-size: 14px;
   line-height: 1.8;
   margin: 0;
-  color: #b59b74;
+  color: var(--gold);
 }
 .form-navigation {
   display: flex;
@@ -1512,7 +1515,7 @@ input[type="checkbox"] {
   align-items: center;
   gap: 10px;
   font-size: 16px;
-  color: #b59a71;
+  color: var(--gold);
 }
 .provenance-options {
   display: flex;
@@ -1530,11 +1533,11 @@ input[type="checkbox"] {
   align-items: center;
   gap: 12px;
   text-align: center;
-  border: 1px dashed #cbb68f;
+  border: 1px dashed color-mix(in srgb, var(--gold) 55%, transparent);
   background: var(--paper);
   padding: 35px 15px;
   cursor: pointer;
-  color: #b3986d !important;
+  color: var(--gold) !important;
 }
 .photo-upload strong {
   font-size: 16px;
@@ -1543,11 +1546,11 @@ input[type="checkbox"] {
 }
 .photo-upload > span {
   font-size: 14px;
-  color: #b49a73;
+  color: var(--gold);
 }
 .photo-upload > small {
   font-size: 14px;
-  color: #bfaa89;
+  color: var(--gold);
 }
 .photo-upload > input {
   position: absolute;
@@ -1638,7 +1641,7 @@ input[type="checkbox"] {
 .success-circle {
   height: 72px;
   width: 72px;
-  border: 1px solid #ccb58d;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -1653,11 +1656,11 @@ input[type="checkbox"] {
 .submission-success p {
   max-width: 360px;
   font-size: 16px;
-  color: #b1966d;
+  color: var(--gold);
 }
 .submission-success code {
   font-size: 14px;
-  color: #b59a6f;
+  color: var(--gold);
   letter-spacing: 0.1em;
   margin: 10px 0;
 }
@@ -1684,7 +1687,7 @@ input[type="checkbox"] {
 .contact-details dt {
   font-size: 14px;
   letter-spacing: 0.14em;
-  color: #b5996b;
+  color: var(--gold);
 }
 .contact-details dd {
   font-size: 16px;
@@ -1728,7 +1731,7 @@ input[type="checkbox"] {
 }
 .about-grid > div > p {
   font-size: 16px;
-  color: #b2966d;
+  color: var(--gold);
 }
 .about-grid .text-link {
   margin-top: 20px;
@@ -1752,7 +1755,7 @@ input[type="checkbox"] {
   left: 6%;
   font-size: 14px;
   letter-spacing: 0.17em;
-  color: #bda57f;
+  color: var(--gold);
 }
 .legal-page {
   max-width: 1030px;
@@ -1785,7 +1788,7 @@ input[type="checkbox"] {
 .brand-list > a > span:nth-last-child(2) {
   margin-left: auto;
   font-size: 16px;
-  color: #b59a70;
+  color: var(--gold);
 }
 .spin {
   animation: spin 1.2s linear infinite;
@@ -1945,7 +1948,7 @@ input[type="checkbox"] {
   gap: 15px;
   font-size: 16px;
   border-radius: 5px;
-  background: #253342;
+  background: var(--navy);
 }
 .admin-error {
   display: flex;
@@ -1979,7 +1982,7 @@ input[type="checkbox"] {
 .mail-notice p {
   font-size: 14px;
   line-height: 1.7;
-  color: #ad9b75;
+  color: var(--gold);
   margin: 7px 0 0;
 }
 .studio-stats {
@@ -2268,7 +2271,7 @@ input[type="checkbox"] {
 }
 .admin-submission .eyebrow {
   font-size: 14px;
-  color: #a59a85;
+  color: var(--gold);
 }
 .admin-submission .button {
   border-radius: 5px;
@@ -2355,7 +2358,7 @@ input[type="checkbox"] {
 .studio .button-dark,
 .admin-dialog .button-dark,
 .login-form .button-dark {
-  background: #253545;
+  background: var(--navy);
   border-radius: 5px;
 }
 .studio .button-outline,
@@ -2445,7 +2448,7 @@ input[type="checkbox"] {
   left: 50%;
   transform: translateX(-50%);
   padding: 17px 24px;
-  background: #253545;
+  background: var(--navy);
   color: white;
   max-width: 90%;
   border-radius: 5px;
@@ -2652,7 +2655,7 @@ input[type="checkbox"] {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 5px;
-  color: #b29c70;
+  color: var(--gold);
   padding: 15px;
   margin-bottom: 25px;
 }
@@ -4210,11 +4213,11 @@ textarea::placeholder {
   color: var(--muted);
 }
 .story-copy > p {
-  color: #aaa296;
+  color: var(--muted);
 }
 .site-footer .eyebrow,
 .story-copy .section-label {
-  color: #b9a581;
+  color: var(--gold);
 }
 .studio label,
 .admin-dialog label,
@@ -5189,15 +5192,15 @@ textarea::placeholder {
    (data-theme on <html>, set before first paint by themeScript).
    ========================================================================== */
 :root[data-theme="dark"] {
-  --ivory: #0b111c; /* page */
-  --paper: #131b29; /* panels behind photos */
-  --surface: #111927; /* cards, inputs, header */
-  --ink: #ece7df; /* text */
-  --charcoal: #d9d3c9;
-  --muted: #9aa5b4;
-  --line: #243044;
-  --gold: #c8a96e;
-  --navy: #070c15; /* footer and fixed dark surfaces */
+  --ivory: #061d16; /* page: deepest brand green */
+  --paper: #0c2a21; /* panels behind photos */
+  --surface: #0a251d; /* cards, inputs, header */
+  --ink: #f4efe4; /* cream text */
+  --charcoal: #eae4d7;
+  --muted: #a9b8ae;
+  --line: #1e4437;
+  --gold: #c9a86a;
+  --navy: #04140f; /* footer and fixed dark surfaces */
   color-scheme: dark;
 }
 :root[data-theme="dark"] body {
@@ -5211,18 +5214,18 @@ textarea::placeholder {
 :root[data-theme="dark"] .lt-sticky-bar .lt-button {
   background: var(--gold);
   border-color: var(--gold);
-  color: #0e1a2b;
+  color: #0b3d2e;
 }
 :root[data-theme="dark"]
   .lt-button:not(.lt-button-outline):not(.lt-button-ghost):hover,
 :root[data-theme="dark"] .button-dark:hover {
-  background: #d8bd88;
-  border-color: #d8bd88;
+  background: var(--gold-soft);
+  border-color: var(--gold-soft);
 }
 :root[data-theme="dark"] .lt-badge-new,
 :root[data-theme="dark"] .lt-dot {
   background: var(--gold);
-  color: #0e1a2b;
+  color: #0b3d2e;
 }
 :root[data-theme="dark"] .lt-badge-reserved {
   color: #f0c48a;
@@ -5318,4 +5321,55 @@ textarea::placeholder {
   .wa-float {
     transition: none;
   }
+}
+
+/* Brand lockups (asset pack). Green artwork on light surfaces, cream on green
+   or dark ones; dark mode always uses cream. */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+.brand-logo img {
+  display: block;
+  width: auto;
+}
+.brand-logo.horizontal img {
+  height: 46px; /* about 205px wide, above the 140px minimum */
+}
+.brand-logo.stacked img {
+  height: 104px;
+}
+.brand-logo.on-light .logo-cream,
+.brand-logo.on-dark .logo-green {
+  display: none;
+}
+.site-header.light .brand-logo .logo-green {
+  display: block;
+}
+.site-header.light .brand-logo .logo-cream {
+  display: none;
+}
+:root[data-theme="dark"] .brand-logo .logo-green {
+  display: none !important;
+}
+:root[data-theme="dark"] .brand-logo .logo-cream {
+  display: block !important;
+}
+@media (max-width: 640px) {
+  .brand-logo.horizontal img {
+    height: 34px; /* about 152px wide */
+  }
+  .brand-logo.stacked img {
+    height: 88px;
+  }
+}
+/* In dark mode the page colour is green, so the hero's light button uses cream. */
+:root[data-theme="dark"] .button-ivory {
+  background: #f4efe4;
+  color: #0b3d2e;
+}
+:root[data-theme="dark"] .button-ivory:hover {
+  background: var(--gold-soft);
+  color: #0b3d2e;
 }

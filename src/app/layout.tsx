@@ -10,8 +10,8 @@ import { WhatsAppFloat } from "@/components/whatsapp-float";
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b111c" },
+    { media: "(prefers-color-scheme: light)", color: "#f4efe4" },
+    { media: "(prefers-color-scheme: dark)", color: "#061d16" },
   ],
   colorScheme: "light dark",
 };
