@@ -10,6 +10,7 @@ tsconfig.tsbuildinfo
 
 .env.*
 !.env.example
+!**/.env.production.example
 *.db
 *.db-*
 *.sqlite*

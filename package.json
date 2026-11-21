@@ -17,6 +17,7 @@
     "db:seed:demo": "tsx prisma/seed.ts --demo",
     "db:admin": "tsx scripts/create-admin.ts",
     "mail:flush": "node --conditions=react-server --import tsx scripts/email-worker.ts",
+    "mail:worker": "node --conditions=react-server --import tsx scripts/email-worker.ts --loop",
     "retention:check": "node --conditions=react-server --import tsx scripts/retention.ts",
     "retention:apply": "node --conditions=react-server --import tsx scripts/retention.ts --apply",
     "pretest:browser": "node scripts/build-test-fixture.mjs"

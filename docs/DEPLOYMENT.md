@@ -1,5 +1,7 @@
 # Deployment and service compatibility
 
+**Step-by-step production runbook (one server + Supabase, Docker Compose, Caddy): [deploy/README.md](../deploy/README.md).**
+
 ## Supported starting point: a Node.js server/container
 
 Use the included Dockerfile with Node 24, Next.js standalone output and server-side secrets. A typical AWS deployment uses ECS/Fargate behind an HTTPS load balancer, PostgreSQL on RDS (or Supabase PostgreSQL), S3 and a CloudFront asset domain. Authentication uses the configured Supabase project. Transactional notifications use Resend through its HTTPS API.
@@ -9,6 +11,8 @@ No AWS resources are automatically provisioned by this repository. Docker/cloud 
 `npm run build` generates Prisma before building Next.js. The container is built on Linux rather than copying Windows node_modules; this matters for Sharp native binaries. Runtime runs as the non-root node user and exposes port 3000. For local container viewing, map host 3002 to container 3000.
 
 Pass NEXT_PUBLIC variables at build time: Supabase URL/publishable key, Turnstile site key, WhatsApp number and optional social URLs. These values are intentionally public. Server secrets (database URL, S3 credentials, Resend key, rate-limit salt and Turnstile secret) belong in the runtime secret store, never build arguments or browser bundles. APP_ORIGIN must be the exact HTTPS production origin. Use one origin consistently.
+
+The Dockerfile has two targets: `runtime` (default, the web server only) and `tools` (full dependencies plus `scripts/`, for `db:migrate`, `db:seed`, `db:admin`, `mail:worker` and `retention:*`). The runtime image cannot run those commands.
 
 Apply `npm run db:migrate` as a controlled release step using the migration/database owner, not from every web instance. Seed homepage defaults once. Configure the trusted runtime database role with access only to the app's tables; browser roles have no grants or RLS policies. Verify those restrictions with the actual PostgreSQL instance before exposing the site.
 
@@ -33,13 +37,13 @@ Test upload, signed preview, approval, publication, rejection and archive with t
 
 Create administrators through Supabase Auth and grant their identity a database role through the trusted CLI. Disable public sign-ups. Auth.getUser validates identity before the app looks up AdminUser. All protected actions repeat role checks on the server. Session cookies are HttpOnly, SameSite and Secure in production. Mutating endpoints validate Origin.
 
-Rate-limit records persist in PostgreSQL and store salted hashes, not raw IP addresses. The default uses the **last** x-forwarded-for entry, suitable for one trusted proxy that appends the real connection IP. Restrict the Node origin to the trusted load balancer; do not allow users to connect directly or trust arbitrary incoming forwarding chains. If adding more proxies, intentionally adapt the trusted-IP extraction strategy for that topology.
+Rate-limit records persist in PostgreSQL and store salted hashes, not raw IP addresses. The default uses the **last** x-forwarded-for entry, suitable for one trusted proxy that appends the real connection IP. Restrict the Node origin to the trusted load balancer; do not allow users to connect directly or trust arbitrary incoming forwarding chains. If another proxy sits in front (for example Cloudflare with the orange cloud), set `TRUSTED_CLIENT_IP_HEADER` to the header that proxy sets (`cf-connecting-ip`) and firewall the origin so only that proxy can reach it.
 
 Configure Turnstile for the production hostname. Server verification checks token, action and hostname. Missing production bot configuration prevents public submissions/enquiries. Rate limits and CAPTCHA complement the deployment's request/body/time limits.
 
 ## Transactional email
 
-Set RESEND_API_KEY, a verified EMAIL_FROM and one or more ADMIN_EMAIL addresses. Schedule mail:flush regularly; it claims due jobs and retries failed delivery. Monitor failed/exhausted jobs. Resend idempotency windows are finite, so provider/network failure can still require operational review; this system does not promise exactly-once delivery indefinitely.
+Set RESEND_API_KEY, a verified EMAIL_FROM and one or more ADMIN_EMAIL addresses. Run `npm run mail:worker` (long-running, flushes every `MAIL_FLUSH_INTERVAL_SECONDS`, default 60) or schedule `mail:flush` regularly; it claims due jobs and retries failed delivery. Monitor failed/exhausted jobs. Resend idempotency windows are finite, so provider/network failure can still require operational review; this system does not promise exactly-once delivery indefinitely.
 
 Do not infer successful delivery from a saved submission or a queued notification. Outbox failures do not delete or lose valid submissions.
 
