@@ -535,7 +535,7 @@ export function AdminStudio() {
           {loading && !data ? (
             <div className="empty-state">
               <LoaderCircle className="spin" />
-              <p>Loading your boutique?</p>
+              <p>Loading your boutique…</p>
             </div>
           ) : (
             data && (
@@ -616,7 +616,7 @@ export function AdminStudio() {
                                 {s.brand} {s.model}
                               </strong>
                               <small>
-                                {s.name} ? {date(s.createdAt)}
+                                {s.name} · {date(s.createdAt)}
                               </small>
                             </div>
                             <span className="status pending_review">
@@ -689,10 +689,10 @@ export function AdminStudio() {
                           <span className="eyebrow">{s.brand}</span>
                           <h2>{s.model}</h2>
                           <p>
-                            {s.name} ? {s.email}
+                            {s.name} · {s.email}
                           </p>
                           <small>
-                            {date(s.createdAt)} ? {money(s.price)} ?{" "}
+                            {date(s.createdAt)} · {money(s.price)} ·{" "}
                             {s.preferredContactMethod} preferred
                           </small>
                         </div>
@@ -887,7 +887,7 @@ export function AdminStudio() {
                               {a.action.replaceAll("_", " ").toLowerCase()}
                             </strong>
                             <p>
-                              {a.actor?.name} ? {a.detail || a.entityId}
+                              {a.actor?.name} · {a.detail || a.entityId}
                             </p>
                           </div>
                           <time>{date(a.createdAt)}</time>
@@ -1006,7 +1006,7 @@ export function AdminStudio() {
               <label className="admin-upload">
                 <Upload size={18} />
                 {uploading
-                  ? "Processing photographs?"
+                  ? "Processing photographs…"
                   : "Upload product photographs"}
                 <input
                   type="file"

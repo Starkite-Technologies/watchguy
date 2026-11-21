@@ -244,7 +244,7 @@ export async function POST(req: Request, context: Context) {
             submissionId: s.id,
             to: s.seller.email,
             subject:
-              "Your watch submission ? " +
+              "Your watch submission — " +
               status.replaceAll("_", " ").toLowerCase(),
             text:
               (action === "APPROVE"
@@ -293,7 +293,7 @@ export async function PATCH(req: Request, context: Context) {
       if (["SOLD", "ARCHIVED"].includes(values.availability))
         values.published = false;
       if (images.some((url) => !validPublicImage(url)))
-        throw new HttpError(400, "Use the store?s uploaded photographs.");
+        throw new HttpError(400, "Use the store’s uploaded photographs.");
       await db.$transaction(async (tx) => {
         const existing = await tx.watch.findUnique({ where: { id: path[1] } });
         if (!existing || existing.sellerType !== values.sellerType)

@@ -20,7 +20,7 @@ export function EnquiryForm({
         <Check size={35} />
         <h2>A conversation has begun.</h2>
         <p>
-          Your enquiry has been saved for our team. We?ll be in touch using the
+          Your enquiry has been saved for our team. We’ll be in touch using the
           details you provided.
         </p>
       </div>
@@ -93,7 +93,7 @@ export function EnquiryForm({
           maxLength={2000}
           defaultValue={
             watchName
-              ? "Hello, I?m interested in " +
+              ? "Hello, I’m interested in " +
                 watchName +
                 ". Please confirm availability, condition and the next steps."
               : ""

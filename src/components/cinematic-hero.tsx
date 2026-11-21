@@ -70,7 +70,7 @@ export function CinematicHero({
           </span>{" "}
           A DIFFERENT PERSPECTIVE ON TIME
         </button>
-        <span>01 ? THE {brand.shortName.toUpperCase()} EDIT</span>
+        <span>01 — THE {brand.shortName.toUpperCase()} EDIT</span>
         <div className="hero-product-note">
           AN ORIGINAL DESIGN STUDY<span>STEEL / CHRONOGRAPH / CONCEPT</span>
         </div>

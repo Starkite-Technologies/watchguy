@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       .getAll("photos")
       .filter((f): f is File => f instanceof File);
     if (photos.length < 3 || photos.length > 6)
-      throw new HttpError(400, "Please supply 3?6 photographs.");
+      throw new HttpError(400, "Please supply 3–6 photographs.");
     keys = await uploadFiles(photos, privateBucket(), "submissions");
     const {
       name,
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
           {
             submissionId: submission.id,
             to: email,
-            subject: brand.name + " ? submission received",
+            subject: brand.name + " — submission received",
             text:
               "Thank you for submitting your " +
               watch.brand +

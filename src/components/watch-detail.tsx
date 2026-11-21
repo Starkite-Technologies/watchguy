@@ -25,7 +25,7 @@ export function WatchDetail({ watch, demo }: { watch: Watch; demo: boolean }) {
     [url, setUrl] = useState("");
   useEffect(() => setUrl(window.location.href), []);
   const message =
-    "Hello, I?m interested in the " +
+    "Hello, I’m interested in the " +
     watch.brand +
     " " +
     watch.model +
@@ -52,7 +52,7 @@ export function WatchDetail({ watch, demo }: { watch: Watch; demo: boolean }) {
             <img
               src={watch.images[photo]}
               alt={
-                watch.brand + " " + watch.model + " ? photograph " + (photo + 1)
+                watch.brand + " " + watch.model + " — photograph " + (photo + 1)
               }
             />
             <span className="watch-badge">
@@ -185,7 +185,7 @@ export function WatchDetail({ watch, demo }: { watch: Watch; demo: boolean }) {
         <DialogContent>
           <DialogTitle className="dialog-heading">A closer look.</DialogTitle>
           <DialogDescription>
-            {watch.brand} {watch.model} ? {money(watch.price)}
+            {watch.brand} {watch.model} — {money(watch.price)}
           </DialogDescription>
           <EnquiryForm
             watchId={watch.id}
@@ -193,7 +193,7 @@ export function WatchDetail({ watch, demo }: { watch: Watch; demo: boolean }) {
               watch.brand +
               " " +
               watch.model +
-              (watch.reference ? " ? " + watch.reference : "")
+              (watch.reference ? " — " + watch.reference : "")
             }
           />
         </DialogContent>

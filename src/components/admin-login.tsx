@@ -92,7 +92,7 @@ export function AdminLogin({ configured }: { configured: boolean }) {
           )}
         </button>
         <Link className="login-back" href="/">
-          ? Back to the boutique
+          ← Back to the boutique
         </Link>
       </form>
       <span className="login-footer">PRIVATE ACCESS. CONSIDERED CONTROL.</span>

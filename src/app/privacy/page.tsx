@@ -6,7 +6,7 @@ export default function Privacy() {
     <>
       <Header />
       <main className="page-main section-wrap legal-page">
-        <SectionLabel>PRIVACY POLICY ? PRE-LAUNCH DRAFT</SectionLabel>
+        <SectionLabel>PRIVACY POLICY — PRE-LAUNCH DRAFT</SectionLabel>
         <h1>
           Your details.
           <br />
@@ -14,7 +14,7 @@ export default function Privacy() {
         </h1>
         <p>
           {brand.name} is a temporary brand for a development preview. The
-          operator?s identity and contact details must be confirmed before
+          operator’s identity and contact details must be confirmed before
           commercial launch. Please use sample information when testing the
           preview.
         </p>

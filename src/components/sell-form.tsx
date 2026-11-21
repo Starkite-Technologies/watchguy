@@ -294,7 +294,7 @@ export function SellForm({ demo = false }: { demo?: boolean }) {
           <>
             <div className="form-grid">
               {field("brand", "Watch brand", {
-                placeholder: "e.g. the watchmaker?s name",
+                placeholder: "e.g. the watchmaker’s name",
               })}
               {field("model", "Model")}
               {field("reference", "Reference number (optional)", {
@@ -342,7 +342,7 @@ export function SellForm({ demo = false }: { demo?: boolean }) {
                 rows={2}
                 value={values.defects}
                 onChange={(e) => set("defects", e.target.value)}
-                placeholder="Please describe wear or damage, or state ?none known?."
+                placeholder="Please describe wear or damage, or state “none known”."
               />
             </label>
             <div className="provenance-options">
@@ -370,7 +370,7 @@ export function SellForm({ demo = false }: { demo?: boolean }) {
               <Upload size={27} />
               <strong>Add your photographs</strong>
               <span>Front, back, side, clasp, and close-up details</span>
-              <small>3?6 JPG, PNG or WebP files ? max 4 MB each</small>
+              <small>3–6 JPG, PNG or WebP files · max 4 MB each</small>
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"

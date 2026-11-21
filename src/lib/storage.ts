@@ -47,7 +47,7 @@ export async function uploadFiles(
   prefix: string,
 ) {
   if (files.length < 1 || files.length > 8)
-    throw new HttpError(400, "Choose 1?8 photographs.");
+    throw new HttpError(400, "Choose 1–8 photographs.");
   const keys: string[] = [];
   try {
     for (const file of files) {

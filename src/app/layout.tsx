@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_ORIGIN || "http://localhost:3002"),
   title: {
-    default: brand.name + " ? Exceptional Watches in Namibia",
+    default: brand.name + " — Exceptional Watches in Namibia",
     template: "%s | " + brand.name,
   },
   description:

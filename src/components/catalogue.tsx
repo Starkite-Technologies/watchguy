@@ -44,7 +44,7 @@ export function WatchCard({
         </h3>
         <p className="watch-meta">
           {watch.condition}
-          <span>?</span>
+          <span>·</span>
           {watch.year || "Year on request"}
         </p>
         <div className="watch-price">
@@ -295,7 +295,7 @@ export function Catalogue({
       )}
       {loading && (
         <p className="field-note" role="status">
-          Updating the collection?
+          Updating the collection…
         </p>
       )}
       <div
@@ -320,7 +320,7 @@ export function Catalogue({
         <span>
           {count} considered timepiece{count === 1 ? "" : "s"}
           {watches.some((w) => w.demo)
-            ? " ? Illustrative development inventory"
+            ? " — Illustrative development inventory"
             : ""}
         </span>
         {(remote ? rows.length < total : visible.length > shown) ? (

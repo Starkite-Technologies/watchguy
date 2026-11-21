@@ -5,7 +5,7 @@ export const defaultContent: SiteContent = {
   heroSubtitle: brand.tagline,
   aboutTitle: "MORE THAN A WATCH. A LEGACY.",
   aboutText:
-    "Some things deserve to be chosen slowly. We?re creating a more personal place to discover, discuss and pass on exceptional timepieces. Considered design. Clear details. A conversation that starts with you.",
+    "Some things deserve to be chosen slowly. We’re creating a more personal place to discover, discuss and pass on exceptional timepieces. Considered design. Clear details. A conversation that starts with you.",
   contactEmail: brand.email,
   contactPhone: brand.phone,
   location: brand.location,
