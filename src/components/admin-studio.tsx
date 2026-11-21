@@ -31,6 +31,9 @@ import {
   DialogDescription,
 } from "./ui/dialog";
 import type { Watch, Submission, SiteContent } from "@/lib/types";
+import { generateWriteUp, seoTitle, seoDescription } from "@/lib/seo";
+import { brand as storeBrand } from "@/config/brand";
+const seoContext = { siteName: storeBrand.name, location: storeBrand.location };
 import { money } from "@/lib/demo";
 type Enquiry = {
   id: string;
@@ -82,6 +85,13 @@ const blank: Watch = {
   defects: "",
   diameter: "",
   movement: "",
+  caseMaterial: "",
+  dial: "",
+  bracelet: "",
+  waterResistance: "",
+  writeUp: "",
+  seoTitle: "",
+  seoDescription: "",
   images: [],
   availability: "AVAILABLE",
   sellerType: "STORE",
@@ -136,6 +146,10 @@ function ListingFields({
             ["year", "Year (optional)"],
             ["diameter", "Case diameter"],
             ["movement", "Movement"],
+            ["caseMaterial", "Case material"],
+            ["dial", "Dial"],
+            ["bracelet", "Bracelet or strap"],
+            ["waterResistance", "Water resistance"],
           ] as const
         ).map(([key, label]) => (
           <label key={key}>
@@ -182,7 +196,7 @@ function ListingFields({
         </label>
       </div>
       <label>
-        Public description
+        Seller notes (short description)
         <textarea
           rows={4}
           required
@@ -191,6 +205,55 @@ function ListingFields({
           onChange={(e) => onChange({ ...value, description: e.target.value })}
         />
       </label>
+      <fieldset className="seo-fields">
+        <legend>Search engine listing</legend>
+        <p className="field-note">
+          Leave these empty to use the automatic versions shown in grey. The
+          write-up only uses the details above, so check them first.
+        </p>
+        <label>
+          Watch page write-up
+          <textarea
+            rows={8}
+            maxLength={6000}
+            value={value.writeUp || ""}
+            placeholder={generateWriteUp(value, seoContext)}
+            onChange={(e) => onChange({ ...value, writeUp: e.target.value })}
+          />
+        </label>
+        <button
+          type="button"
+          className="button button-outline"
+          onClick={() =>
+            onChange({ ...value, writeUp: generateWriteUp(value, seoContext) })
+          }
+        >
+          Fill from specs
+        </button>
+        <label>
+          Search result title ({(value.seoTitle || seoTitle(value)).length}/60)
+          <input
+            maxLength={70}
+            value={value.seoTitle || ""}
+            placeholder={seoTitle(value)}
+            onChange={(e) => onChange({ ...value, seoTitle: e.target.value })}
+          />
+        </label>
+        <label>
+          Search result description (
+          {(value.seoDescription || seoDescription(value, seoContext)).length}
+          /155)
+          <textarea
+            rows={2}
+            maxLength={170}
+            value={value.seoDescription || ""}
+            placeholder={seoDescription(value, seoContext)}
+            onChange={(e) =>
+              onChange({ ...value, seoDescription: e.target.value })
+            }
+          />
+        </label>
+      </fieldset>
       <label>
         Condition notes / known defects
         <textarea

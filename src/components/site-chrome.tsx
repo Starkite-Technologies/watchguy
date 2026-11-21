@@ -62,7 +62,7 @@ export function Header() {
       <header className={"site-header " + (light ? "light" : "")}>
         <Logo dark={light} />
         <nav className="desktop-nav" aria-label="Main navigation">
-          <Link href="/collection">The collection</Link>
+          <Link href="/collection">Buy watches</Link>
           <Link href="/about">Our story</Link>
           <Link href="/sell">Sell your watch</Link>
         </nav>
@@ -93,7 +93,7 @@ export function Header() {
           <nav aria-label="Mobile navigation">
             {[
               ["/", "Home"],
-              ["/collection", "The collection"],
+              ["/collection", "Buy watches"],
               ["/about", "Our story"],
               ["/sell", "Sell your watch"],
               ["/contact", "Contact"],

@@ -26,8 +26,13 @@ export type Filters = {
   availability?: string;
   minPrice?: number;
   maxPrice?: number;
+  boxPapers?: boolean;
   sort?: string;
 };
+export const NEW_IN_DAYS = 21;
+export const isNewIn = (w: Pick<Watch, "createdAt">, now = Date.now()) =>
+  !!w.createdAt &&
+  now - new Date(w.createdAt).getTime() < NEW_IN_DAYS * 86400000;
 export function filterWatches(watches: Watch[], filters: Filters = {}) {
   const {
     search = "",
@@ -48,6 +53,7 @@ export function filterWatches(watches: Watch[], filters: Filters = {}) {
         w.availability === availability) &&
       w.price >= minPrice &&
       w.price <= maxPrice &&
+      (!filters.boxPapers || (w.box && w.papers)) &&
       [w.brand, w.model, w.reference || ""]
         .join(" ")
         .toLowerCase()
@@ -55,6 +61,11 @@ export function filterWatches(watches: Watch[], filters: Filters = {}) {
   );
   if (sort === "price-low") list.sort((a, b) => a.price - b.price);
   else if (sort === "price-high") list.sort((a, b) => b.price - a.price);
+  else if (sort === "brand-az")
+    list.sort(
+      (a, b) =>
+        a.brand.localeCompare(b.brand) || a.model.localeCompare(b.model),
+    );
   else
     list.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
   return list;

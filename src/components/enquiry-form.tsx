@@ -5,9 +5,11 @@ import { BotCheck } from "./bot-check";
 export function EnquiryForm({
   watchId,
   watchName,
+  initialMessage,
 }: {
   watchId?: string;
   watchName?: string;
+  initialMessage?: string;
 }) {
   const [working, setWorking] = useState(false),
     [error, setError] = useState(""),
@@ -92,11 +94,12 @@ export function EnquiryForm({
           required
           maxLength={2000}
           defaultValue={
-            watchName
+            initialMessage ??
+            (watchName
               ? "Hello, I’m interested in " +
                 watchName +
                 ". Please confirm availability, condition and the next steps."
-              : ""
+              : "")
           }
         />
       </label>
