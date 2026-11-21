@@ -1,4 +1,5 @@
-import { loadEnvConfig } from "@next/env";
+import nextEnv from "@next/env";
+const { loadEnvConfig } = nextEnv;
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { z } from "zod";

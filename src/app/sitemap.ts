@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { db, databaseConfigured } from "@/lib/db";
 export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  if (process.env.DEMO_MODE === "true" || !databaseConfigured) return [];
+  if (process.env.DEMO_MODE === "true" || !databaseConfigured()) return [];
   const base = process.env.APP_ORIGIN!;
   const rows = await db.watch.findMany({
     where: {

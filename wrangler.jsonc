@@ -1,0 +1,39 @@
+{
+  // Cloudflare Worker for the Watchguy / Atelier Timepieces marketplace.
+  // Built by `npm run cf:build` (OpenNext); deployed by Workers Builds on every
+  // push to main. Secrets are set in the dashboard (Settings > Variables and
+  // Secrets), never here. See docs/CLOUDFLARE.md.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "watchguy",
+  "main": "worker.ts",
+  "compatibility_date": "2026-11-11",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // Next.js server responses must not be served from the edge cache unchecked.
+  "observability": { "enabled": true },
+  // Photo re-encoding (replaces sharp).
+  "images": { "binding": "IMAGES" },
+  // PostgreSQL (Supabase) through Cloudflare's connection pooler.
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "REPLACE_WITH_HYPERDRIVE_ID"
+    }
+  ],
+  // Flush the email outbox every minute (worker.ts -> /api/internal/mail-flush).
+  "triggers": { "crons": ["* * * * *"] },
+  "vars": {
+    "NODE_ENV": "production",
+    "DEMO_MODE": "false",
+    // Every request reaches the Worker through Cloudflare, which sets this header
+    // to the real visitor IP and cannot be bypassed.
+    "TRUSTED_CLIENT_IP_HEADER": "cf-connecting-ip",
+    "S3_PRIVATE_BUCKET": "atelier-submissions",
+    "S3_PUBLIC_BUCKET": "atelier-watches",
+    "S3_FORCE_PATH_STYLE": "true",
+    "REJECTED_RETENTION_DAYS": "90"
+  }
+}

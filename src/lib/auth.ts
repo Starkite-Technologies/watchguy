@@ -31,7 +31,7 @@ export async function authClient() {
   );
 }
 export async function getAdmin() {
-  if (!databaseConfigured || !authConfigured) return null;
+  if (!databaseConfigured() || !authConfigured()) return null;
   const client = await authClient();
   const {
     data: { user },
@@ -43,7 +43,7 @@ export async function getAdmin() {
 export async function requireAdmin(
   roles: Role[] = ["OWNER", "EDITOR", "REVIEWER"],
 ) {
-  if (!databaseConfigured || !authConfigured)
+  if (!databaseConfigured() || !authConfigured())
     throw new HttpError(503, "Admin authentication is not configured.");
   const admin = await getAdmin();
   if (!admin)
@@ -62,8 +62,8 @@ export function checkOrigin(req: Request) {
   const allowed = process.env.APP_ORIGIN
     ? [process.env.APP_ORIGIN]
     : process.env.NODE_ENV === "production" &&
-        databaseConfigured &&
-        authConfigured
+        databaseConfigured() &&
+        authConfigured()
       ? []
       : [url.origin, url.protocol + "//" + host];
   if (!origin || !allowed.includes(origin))

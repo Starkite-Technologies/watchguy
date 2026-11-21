@@ -1,5 +1,6 @@
 import { defineConfig } from "prisma/config";
-import { loadEnvConfig } from "@next/env";
+import nextEnv from "@next/env";
+const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 export default defineConfig({
   schema: "prisma/schema.prisma",

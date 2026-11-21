@@ -4,7 +4,7 @@ import { defaultContent } from "./demo";
 import type { Watch, SiteContent } from "./types";
 import type { Watch as DbWatch, WatchImage } from "@prisma/client";
 export const demoEnabled = () =>
-  !databaseConfigured &&
+  !databaseConfigured() &&
   (process.env.NODE_ENV === "development" || process.env.DEMO_MODE === "true");
 export function watchDto(row: DbWatch & { images: WatchImage[] }): Watch {
   return {
@@ -39,7 +39,7 @@ export async function getWatches(): Promise<Watch[]> {
     const data = await import("../../prisma/demo-watches.json");
     return data.default as Watch[];
   }
-  if (!databaseConfigured)
+  if (!databaseConfigured())
     throw new Error("DATABASE_URL is required outside explicit demo mode.");
   return (
     await db.watch.findMany({
@@ -75,7 +75,7 @@ export async function getWatch(slug: string) {
   return row ? watchDto(row) : null;
 }
 export async function getContent(): Promise<SiteContent> {
-  if (!databaseConfigured) return defaultContent;
+  if (!databaseConfigured()) return defaultContent;
   const row = await db.siteContent.findUnique({ where: { id: "home" } });
   return {
     ...defaultContent,

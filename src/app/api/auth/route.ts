@@ -10,7 +10,7 @@ import { rateLimit } from "@/lib/services";
 export async function POST(req: Request) {
   try {
     checkOrigin(req);
-    if (!authConfigured || !databaseConfigured)
+    if (!authConfigured() || !databaseConfigured())
       throw new HttpError(503, "Authentication is not connected yet.");
     const body = await limitedJson(req, 3000);
     const auth = await authClient();
