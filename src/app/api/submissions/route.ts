@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   let saved = false;
   try {
     checkOrigin(req);
-    if (!backendConfigured)
+    if (!backendConfigured())
       throw new HttpError(
         503,
         "Submissions are not connected in this design preview. No personal details or photos have been saved.",

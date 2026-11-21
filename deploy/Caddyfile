@@ -1,0 +1,15 @@
+# Automatic HTTPS (Let's Encrypt) for SITE_DOMAIN, proxied to the Next.js app.
+# Caddy replaces any client-supplied X-Forwarded-For with the real connecting
+# address, which is what the app's rate limiter reads by default.
+{$SITE_DOMAIN} {
+	encode zstd gzip
+	request_body {
+		# 8 photos x 4 MB plus form overhead
+		max_size 40MB
+	}
+	reverse_proxy web:3000
+}
+
+www.{$SITE_DOMAIN} {
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}

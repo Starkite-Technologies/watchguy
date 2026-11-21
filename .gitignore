@@ -10,6 +10,8 @@ tsconfig.tsbuildinfo
 
 .env.*
 !.env.example
+!.env.production
+!**/.env.production.example
 *.db
 *.db-*
 *.sqlite*
@@ -17,3 +19,8 @@ tsconfig.tsbuildinfo
 *.key
 *.log
 next-env.d.ts
+
+# Cloudflare / OpenNext
+.open-next
+.wrangler
+.dev.vars*

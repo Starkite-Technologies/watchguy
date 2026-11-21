@@ -6,5 +6,5 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 export default function Page() {
-  return <AdminLogin configured={authConfigured && databaseConfigured} />;
+  return <AdminLogin configured={authConfigured() && databaseConfigured()} />;
 }

@@ -1,0 +1,50 @@
+{
+  // Cloudflare Worker for the Watchguy / Atelier Timepieces marketplace.
+  // Built by `npm run cf:build` (OpenNext); deployed by Workers Builds on every
+  // push to main. Secrets are set in the dashboard (Settings > Variables and
+  // Secrets), never here. See docs/CLOUDFLARE.md.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "watchguy",
+  "main": "worker.ts",
+  "compatibility_date": "2026-11-11",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // Next.js server responses must not be served from the edge cache unchecked.
+  "observability": { "enabled": true },
+  // Photo re-encoding (replaces sharp).
+  "images": { "binding": "IMAGES" },
+  // PostgreSQL (Supabase) through Cloudflare's connection pooler.
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "b4f54b6f42ab428281a69bcf95c13917"
+    }
+  ],
+  // Flush the email outbox every minute (worker.ts -> /api/internal/mail-flush).
+  "triggers": { "crons": ["* * * * *"] },
+  "vars": {
+    "NODE_ENV": "production",
+    "DEMO_MODE": "false",
+    // Every request reaches the Worker through Cloudflare, which sets this header
+    // to the real visitor IP and cannot be bypassed.
+    "TRUSTED_CLIENT_IP_HEADER": "cf-connecting-ip",
+    "S3_PRIVATE_BUCKET": "atelier-submissions",
+    "S3_PUBLIC_BUCKET": "atelier-watches",
+    "S3_FORCE_PATH_STYLE": "true",
+    "REJECTED_RETENTION_DAYS": "90",
+    "APP_ORIGIN": "https://watchguy.babies-tods-public-site.workers.dev",
+    // Public values (also baked into the browser bundle from .env.production).
+    "NEXT_PUBLIC_SUPABASE_URL": "https://sdcxmjqxyvikdathhluq.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_mlXKwqUXoEZ0G1SVuUrvrw_px6SB138",
+    "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGMMPxBm6AwcdEZD",
+    // Supabase Storage (S3 protocol). Access keys are Worker secrets.
+    "S3_REGION": "eu-west-1",
+    "S3_ENDPOINT": "https://sdcxmjqxyvikdathhluq.storage.supabase.co/storage/v1/s3",
+    "PUBLIC_ASSET_BASE_URL": "https://sdcxmjqxyvikdathhluq.supabase.co/storage/v1/object/public/atelier-watches"
+  },
+  // Dashboard secrets (Settings > Variables and Secrets) are kept on deploy.
+  "keep_vars": true
+}

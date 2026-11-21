@@ -2,11 +2,11 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { db } from "./db";
 import { HttpError } from "./errors";
+import { clientIp } from "./client-ip";
 export async function rateLimit(req: Request, scope: string, max = 5) {
   if (!process.env.RATE_LIMIT_SECRET)
     throw new HttpError(503, "This service is not configured yet.");
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() || "local";
+  const ip = clientIp(req);
   const key = createHash("sha256")
     .update(scope + ":" + ip + ":" + process.env.RATE_LIMIT_SECRET)
     .digest("hex");

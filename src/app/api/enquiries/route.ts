@@ -8,7 +8,7 @@ import { adminRecipients, tryFlushEmail } from "@/lib/email";
 export async function POST(req: Request) {
   try {
     checkOrigin(req);
-    if (!backendConfigured)
+    if (!backendConfigured())
       throw new HttpError(
         503,
         "Enquiries are not connected in this design preview. Your message has not been sent.",

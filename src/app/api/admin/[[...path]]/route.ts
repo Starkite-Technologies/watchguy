@@ -63,7 +63,7 @@ export async function GET() {
         defects: s.defects,
         box: s.box,
         papers: s.papers,
-        images: storageConfigured
+        images: storageConfigured()
           ? await Promise.all(s.images.map((i) => signedPhoto(i.storageKey)))
           : [],
         status: s.status,
@@ -100,7 +100,7 @@ export async function POST(req: Request, context: Context) {
         : ["OWNER", "EDITOR"],
     );
     if (path[0] === "uploads") {
-      if (!storageConfigured)
+      if (!storageConfigured())
         throw new HttpError(503, "Photo storage is not configured.");
       const form = await limitedForm(req, 34 * 1024 * 1024);
       const files = form
@@ -173,7 +173,7 @@ export async function POST(req: Request, context: Context) {
         throw new HttpError(409, "This submission has already been reviewed.");
       const urls: string[] = [];
       if (action === "APPROVE") {
-        if (!storageConfigured)
+        if (!storageConfigured())
           throw new HttpError(503, "Photo storage is not configured.");
         for (const i of [...new Set(selectedImages)]) {
           if (!s.images[i])

@@ -1,0 +1,63 @@
+# Watchguy / Atelier Timepieces — single-server production stack.
+# Run from this folder:
+#   docker compose --env-file .env.production up -d --build
+# One-off operations (migrations, seeding, admin):
+#   docker compose --env-file .env.production run --rm tools npm run db:migrate
+name: watchguy
+
+x-public-build-args: &public-build-args
+  NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:?set NEXT_PUBLIC_SUPABASE_URL}
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:?set NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:?set NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+  NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER:-}
+  NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-}
+  NEXT_PUBLIC_FACEBOOK_URL: ${NEXT_PUBLIC_FACEBOOK_URL:-}
+
+services:
+  web:
+    build:
+      context: ..
+      target: runtime
+      args: *public-build-args
+    image: watchguy-web:latest
+    env_file: .env.production
+    restart: unless-stopped
+    # No published ports: only Caddy can reach the app, so the last
+    # X-Forwarded-For entry is always the address Caddy saw.
+    expose: ["3000"]
+
+  worker:
+    build:
+      context: ..
+      target: tools
+    image: watchguy-tools:latest
+    env_file: .env.production
+    command: ["npm", "run", "mail:worker"]
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+
+  # Not started by `up`; used with `docker compose run --rm tools ...`.
+  tools:
+    image: watchguy-tools:latest
+    env_file: .env.production
+    profiles: ["tools"]
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+
+volumes:
+  caddy_data:
+  caddy_config:

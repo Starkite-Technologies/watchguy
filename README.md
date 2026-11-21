@@ -73,7 +73,7 @@ That command grants OWNER to the configured identity; it does not create a passw
 
 Submissions, seller acknowledgements, review decisions, information requests and customer enquiries create durable email jobs. Creation of a submission and its jobs is transactional. Sending happens after the response; provider failure does not roll back the saved submission. Seller contact details stay private.
 
-Run the worker regularly (for example once per minute in a scheduled Node task):
+Run the worker regularly (for example once per minute in a scheduled Node task), or run `npm run mail:worker`, which stays running and flushes every minute (the production Docker setup does this):
 
 ```powershell
 npm.cmd run mail:flush
@@ -106,4 +106,4 @@ Real cloud authentication, PostgreSQL migration execution, S3 permissions and ma
 
 ## Deployment
 
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). A Node standalone Docker deployment for AWS is included. This is a full server application, not a static export. Cloudflare Workers requires a specifically verified adapter and replacements for native processing/connection requirements; no Workers adapter has been selected or claimed as tested.
+Production runbook: [deploy/README.md](deploy/README.md) (one server with Docker Compose, Caddy HTTPS and Supabase). Background and service details: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). A Node standalone Docker deployment for AWS is included. This is a full server application, not a static export. Cloudflare Workers requires a specifically verified adapter and replacements for native processing/connection requirements; no Workers adapter has been selected or claimed as tested.

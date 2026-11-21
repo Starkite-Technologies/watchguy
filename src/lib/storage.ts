@@ -6,9 +6,9 @@ import {
   DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import sharp from "sharp";
 import { HttpError } from "./errors";
 import { validImage } from "./validation";
+import { reencodeAsWebp } from "./image-processing";
 export const privateBucket = () => process.env.S3_PRIVATE_BUCKET!;
 export const publicBucket = () => process.env.S3_PUBLIC_BUCKET!;
 let client: S3Client | undefined;
@@ -56,27 +56,7 @@ export async function uploadFiles(
       const bytes = new Uint8Array(await file.arrayBuffer());
       if (!validImage(bytes, file.type))
         throw new HttpError(400, "Use valid JPG, PNG or WebP photographs.");
-      let output: Buffer;
-      try {
-        output = await sharp(bytes, {
-          limitInputPixels: 20000000,
-          animated: false,
-        })
-          .rotate()
-          .resize({
-            width: 2200,
-            height: 2200,
-            fit: "inside",
-            withoutEnlargement: true,
-          })
-          .webp({ quality: 86 })
-          .toBuffer();
-      } catch {
-        throw new HttpError(
-          400,
-          "This photograph could not be decoded. Try a smaller, standard image.",
-        );
-      }
+      const output = await reencodeAsWebp(bytes);
       const key = prefix + "/" + crypto.randomUUID() + ".webp";
       await s3().send(
         new PutObjectCommand({
