@@ -41,7 +41,15 @@ export default async function Contact() {
             </div>
             <div>
               <dt>TELEPHONE</dt>
-              <dd>{c.contactPhone}</dd>
+              <dd>
+                {/\d{6,}/.test(c.contactPhone.replace(/\s/g, "")) ? (
+                  <a href={"tel:" + c.contactPhone.replace(/\s/g, "")}>
+                    {c.contactPhone}
+                  </a>
+                ) : (
+                  c.contactPhone
+                )}
+              </dd>
             </div>
           </dl>
           {number && (
